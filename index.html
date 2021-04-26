@@ -45,10 +45,191 @@
         <section>
           <h2>Tabla de contenido</h2>
           <ul>
-            <li>Introducción</li>
-            <li>Detalles</li>
-            <li>Costos</li>
+            <li><a href="#/2">Introducción</a></li>
+            <li><a href="#/3">Detalles</a></li>
+            <li><a href="#/4">Aspectos técnicos</a></li>
+            <li><a href="#/5">Costos</a></li>
+            <li><a href="#/6">Ventajas</a></li>
           </ul>
+        </section>
+
+        <!-- Slide 3 -->
+        <section>
+          <!-- Slide 3.1 -->
+          <section>
+            <h3>Introducción</h3>
+            <p>
+              Tic Tac Toe también conocido como Triqui o Tres en raya, es un
+              juego de estrategia, comúnmente entre dos jugadores
+              <span style="color: #aaa">'X</span> y
+              <span style="color: #aaa">O</span>, que son marcados en un espacio
+              de un tablero 3x3 alternadamente
+            </p>
+          </section>
+          <!-- Slide 3.2 -->
+          <section>
+            <h3>Variantes</h3>
+            <p>
+              Las variantes de este juego son infinitas, entre la variedad de
+              tableros, variedad de jugadores y la cantidad de marcas(<span
+                style="color: #aaa"
+                >X</span
+              >
+              o <span style="color: #aaa">O</span>) para ganar
+            </p>
+          </section>
+          <!-- Slide 3.3 -->
+          <section>
+            <h3>Ejemplo</h3>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Tic-tac-toe_5.png/220px-Tic-tac-toe_5.png"
+              alt="Juego 11,10,5"
+            />
+            <br />
+            <small>Juego 11,10,5</small>
+          </section>
+        </section>
+
+        <!-- Slide 4 -->
+        <section>
+          <!-- Slide 4.1 -->
+          <section>
+            <h3>Detalles</h3>
+            <ul>
+              <li>autentificación</li>
+              <li>Reconocimiento de voz</li>
+              <li>Multijugador</li>
+              <li>Online</li>
+              <li>Puntuación de nivel</li>
+              <li>Sala de espera</li>
+              <li>Personalizar partidas</li>
+              <li>Contra la maquina</li>
+            </ul>
+          </section>
+          <!-- Slide 4.2 -->
+          <section>
+            <h3>Futuro</h3>
+            <ul>
+              <li>Inteligencia Artificial</li>
+              <li>Análisis de la partida</li>
+            </ul>
+          </section>
+        </section>
+
+        <!-- Slide 5 -->
+        <section>
+          <!-- Slide 5.1 -->
+          <section>
+            <h3>Aspectos técnicos</h3>
+            <ul>
+              <li><a href="#/4/1">API REST</a></li>
+              <li><a href="#/4/2">Sockets</a></li>
+              <li><a href="#/4/3">Encriptacion Salt</a></li>
+              <li><a href="#/4/4">JSON Web Tokens (JWT)</a></li>
+              <li><a href="#/4/5">Speech Recognition</a></li>
+            </ul>
+          </section>
+          <!-- Slide 5.2 -->
+          <section>
+            <h3>API REST</h3>
+            <p>
+              es una interfaz de programación de aplicaciones (API) de
+              transferencia de estado representacional (REST)
+            </p>
+            <img
+              src="https://www.astera.com/wp-content/uploads/2020/01/rest.png"
+              alt="Arquitectura REST"
+              width="450"
+              height="300"
+            />
+            <aside class="notes">
+              por protocolo HTTP: Protocolo de transferencia de hipertexto
+            </aside>
+          </section>
+          <!-- Slide 5.3 -->
+          <section>
+            <h3>Sockets</h3>
+            <p>
+              es un concepto por el cual dos procesos pueden intercambiar
+              cualquier flujo de datos
+            </p>
+            <img
+              src="https://images.ctfassets.net/ee3ypdtck0rk/27G4lHu2Vj0Cm0CUC2x5p7/dc6ec5c252beb97314293937f70ea0d0/chat-2560521f9fe468d126d0e2cad7ee32073fa95a6b59374c3a1700fa41b85df2e2.png"
+              alt="Sockets"
+              width="450"
+              height="300"
+            />
+            <aside class="notes">
+              por protocolo TCP: Protocolo de control de transmisión. los datos
+              pueden enviarse de forma bidireccional
+            </aside>
+          </section>
+          <!-- Slide 5.4 -->
+          <section>
+            <h3>Encriptacion Salt</h3>
+            <p>es un tipo de encriptacion, usada para encriptar contraseñas</p>
+            <img
+              src="https://www.researchgate.net/profile/Petr-Vobornik/publication/264237842/figure/fig1/AS:614254763859994@1523461156355/Diagram-of-data-encryption-using-the-salt.png"
+              alt="Salt"
+              width="450"
+              height="300"
+            />
+            <aside class="notes">
+              Salt generada automáticamente y se une con la contraseña. no se
+              desencripta, se compara con contraseña encriptada
+            </aside>
+          </section>
+          <!-- Slide 5.5 -->
+          <section>
+            <h3>JWT</h3>
+            <p>
+              es un estándar abierto basado en JSON para la creación de tokens
+              de acceso
+            </p>
+            <img src="https://i.imgur.com/i0TTpSl.png" alt="JWT" />
+            <aside class="notes">
+              Header: información del algoritmo Payload: información a encriptar
+              Sing: firma con una clave secreta
+            </aside>
+          </section>
+          <!-- Slide 5.6 -->
+          <section>
+            <h3>Speech Recognition</h3>
+            <p>
+              es el reconocimiento automático de voz, ya esta implementado en
+              los navegadores
+            </p>
+            <img
+              src="https://csharpcorner.azureedge.net/article/speech-to-text-recognition-using-python/Images/speech-recognition-python.png"
+              alt="Speech Recognition"
+            />
+          </section>
+        </section>
+
+        <!-- Slide 6 -->
+        <section>
+          <h3>Costos</h3>
+          <p>Tiempo de desarrollo estimado de 2 meses</p>
+          <ul>
+            <li>Energía</li>
+            <li>Internet</li>
+            <li>Problemas de programación</li>
+          </ul>
+        </section>
+
+        <!-- Slide 7 -->
+        <section>
+          <h3>Ventajas</h3>
+          <ul>
+            <li>Capacidad de desarrollar estrategias</li>
+            <li>Aumenta la rapidez de nuestras decisiones</li>
+            <li>Puede brindar habilidades para matemáticas</li>
+          </ul>
+        </section>
+
+        <!-- Slide 8 -->
+        <section>
+          <h1>Gracias</h1>
         </section>
       </div>
     </div>
