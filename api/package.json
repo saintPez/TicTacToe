@@ -1,0 +1,37 @@
+{
+  "name": "api-tictactoe",
+  "version": "0.0.0",
+  "description": "simple API REST tictactoe",
+  "private": true,
+  "main": "src/server.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node src/server.js",
+    "dev": "cross-env NODE_ENV=development nodemon src/server.js"
+  },
+  "keywords": [
+    "API",
+    "TicTacToe",
+    "Game"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "5.0.1",
+    "cors": "2.8.5",
+    "cross-env": "7.0.3",
+    "dotenv": "8.2.0",
+    "express": "4.17.1",
+    "helmet": "4.5.0",
+    "http-errors": "1.8.0",
+    "mongoose": "5.12.6",
+    "socket.io": "4.0.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "12.1.1",
+    "@commitlint/config-conventional": "12.1.1",
+    "eslint": "7.25.0",
+    "eslint-config-prettier": "8.3.0",
+    "husky": "6.0.0",
+    "nodemon": "2.0.7",
+    "prettier": "2.2.1"
+  }
+}
