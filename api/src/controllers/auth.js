@@ -16,11 +16,14 @@ const {
   resetPasswordSchema,
 } = require('../validations/auth')
 
+const transporter = require('../mailer')
+
 const {
   ACCESS_TOKEN_SECRET,
   ACCESS_TOKEN_EXPIRES_IN,
   REFRESH_TOKEN_SECRET,
   REFRESH_TOKEN_EXPIRES_IN,
+  EMAIL_USER,
 } = require('../env')
 
 // signIn
@@ -106,7 +109,6 @@ const createCode = async (req, res, next) => {
 
   do {
     data = crypto.randomBytes(3).toString('hex')
-    console.log(await Code.findOne({ data: data }))
   } while (await Code.findOne({ data: data }))
 
   const code = await Code.create({
@@ -115,7 +117,12 @@ const createCode = async (req, res, next) => {
     user_updatedAt: user.updatedAt.getTime(),
   })
 
-  console.log(code)
+  await transporter.sendMail({
+    from: `"Tic-Tac-Toe - Code" <${EMAIL_USER}>`,
+    to: user.email,
+    subject: 'Tic-Tac-Toe - Code',
+    html: `<div>${code.data}</div>`,
+  })
 
   res.status(201).json({ success: true })
 }
@@ -133,8 +140,6 @@ const isValidCode = async (req, res, next) => {
     user: user._id,
     user_updatedAt: user.updatedAt.getTime(),
   })
-
-  // send code by mail
 
   console.log(code)
   if (!code) return next(createError(400, 'Invalid code'))
