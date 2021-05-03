@@ -11,6 +11,12 @@ const signUpSchema = Joi.object({
   password: Joi.string().min(5).required(),
 })
 
+const isAuthenticatedSchema = Joi.object({
+  authorization: Joi.string()
+    .pattern(/^Bearer+ [A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/)
+    .required(),
+})
+
 const createCodeSchema = Joi.object({
   email: Joi.string().email().required(),
 })
@@ -27,6 +33,7 @@ const resetPasswordSchema = Joi.object({
 module.exports = {
   signInSchema,
   signUpSchema,
+  isAuthenticatedSchema,
   createCodeSchema,
   isValidCodeSchema,
   resetPasswordSchema,

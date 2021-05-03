@@ -11,6 +11,7 @@ const validate = require('../lib/validate')
 const {
   signInSchema,
   signUpSchema,
+  isAuthenticatedSchema,
   createCodeSchema,
   isValidCodeSchema,
   resetPasswordSchema,
@@ -31,31 +32,35 @@ const {
 const signInValidation = validate.body(signInSchema)
 
 const signIn = async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email })
-  if (!user || !(await bcrypt.compare(req.body.password, user?.password)))
-    return next(
-      createError(401, 'Incorrect email or password', { expose: true })
+  try {
+    const user = await User.findOne({ email: req.body.email })
+    if (!user || !(await bcrypt.compare(req.body.password, user?.password)))
+      return next(
+        createError(401, 'Incorrect email or password', { expose: true })
+      )
+
+    const access_token = await jwt.sign(
+      { _id: user._id, updatedAt: user.updatedAt.getTime() },
+      ACCESS_TOKEN_SECRET,
+      { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
+    )
+    const refresh_token = await jwt.sign(
+      { _id: user._id },
+      REFRESH_TOKEN_SECRET + user.updatedAt.getTime(),
+      { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
     )
 
-  const access_token = await jwt.sign(
-    { _id: user._id, updatedAt: user.updatedAt.getTime() },
-    ACCESS_TOKEN_SECRET,
-    { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
-  )
-  const refresh_token = await jwt.sign(
-    { _id: user._id },
-    REFRESH_TOKEN_SECRET + user.updatedAt.getTime(),
-    { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
-  )
-
-  res.json({
-    success: true,
-    access_token,
-    token_type: 'Bearer',
-    expires_in: ACCESS_TOKEN_EXPIRES_IN,
-    refresh_token,
-    refresh_token_expires_in: REFRESH_TOKEN_EXPIRES_IN,
-  })
+    res.json({
+      success: true,
+      access_token,
+      token_type: 'Bearer',
+      expires_in: ACCESS_TOKEN_EXPIRES_IN,
+      refresh_token,
+      refresh_token_expires_in: REFRESH_TOKEN_EXPIRES_IN,
+    })
+  } catch (error) {
+    next(createError(500, 'Something has gone wrong', { expose: true }))
+  }
 }
 
 // signUp
@@ -63,38 +68,58 @@ const signIn = async (req, res, next) => {
 const signUpValidation = validate.body(signUpSchema)
 
 const signUp = async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email })
-  if (user)
-    return next(createError(409, 'Email is already in use', { expose: true }))
+  try {
+    const user = await User.findOne({ email: req.body.email })
+    if (user)
+      return next(createError(409, 'Email is already in use', { expose: true }))
 
-  const salt = await bcrypt.genSalt(10)
-  const password = await bcrypt.hash(req.body.password, salt)
+    const salt = await bcrypt.genSalt(10)
+    const password = await bcrypt.hash(req.body.password, salt)
 
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password,
-  })
+    const newUser = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password,
+    })
 
-  const access_token = await jwt.sign(
-    { _id: newUser._id, updatedAt: newUser.updatedAt.getTime() },
-    ACCESS_TOKEN_SECRET,
-    { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
-  )
-  const refresh_token = await jwt.sign(
-    { _id: newUser._id },
-    REFRESH_TOKEN_SECRET + newUser.updatedAt.getTime(),
-    { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
-  )
+    const access_token = await jwt.sign(
+      { _id: newUser._id, updatedAt: newUser.updatedAt.getTime() },
+      ACCESS_TOKEN_SECRET,
+      { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
+    )
+    const refresh_token = await jwt.sign(
+      { _id: newUser._id },
+      REFRESH_TOKEN_SECRET + newUser.updatedAt.getTime(),
+      { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
+    )
 
-  res.json({
-    success: true,
-    access_token,
-    token_type: 'Bearer',
-    expires_in: ACCESS_TOKEN_EXPIRES_IN,
-    refresh_token,
-    refresh_token_expires_in: REFRESH_TOKEN_EXPIRES_IN,
-  })
+    res.json({
+      success: true,
+      access_token,
+      token_type: 'Bearer',
+      expires_in: ACCESS_TOKEN_EXPIRES_IN,
+      refresh_token,
+      refresh_token_expires_in: REFRESH_TOKEN_EXPIRES_IN,
+    })
+  } catch (error) {
+    next(createError(500, 'Something has gone wrong', { expose: true }))
+  }
+}
+
+const isAuthenticatedValidation = validate.headers(isAuthenticatedSchema)
+
+const isAuthenticated = async (req, res, next) => {
+  try {
+    const { authorization } = req.headers
+    const access_token = authorization.split(' ')[1]
+    const { _id } = await jwt.verify(access_token, ACCESS_TOKEN_SECRET)
+
+    req.user = _id
+
+    next()
+  } catch (error) {
+    next(createError(401, 'Invalid token', { expose: true }))
+  }
 }
 
 // createCode
@@ -102,29 +127,33 @@ const signUp = async (req, res, next) => {
 const createCodeValidation = validate.body(createCodeSchema)
 
 const createCode = async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email })
-  if (!user) return next(createError(404, 'User not found', { expose: true }))
+  try {
+    const user = await User.findOne({ email: req.body.email })
+    if (!user) return next(createError(404, 'User not found', { expose: true }))
 
-  let data
+    let data
 
-  do {
-    data = crypto.randomBytes(3).toString('hex')
-  } while (await Code.findOne({ data: data }))
+    do {
+      data = crypto.randomBytes(3).toString('hex')
+    } while (await Code.findOne({ data: data }))
 
-  const code = await Code.create({
-    data: data,
-    user: user._id,
-    user_updatedAt: user.updatedAt.getTime(),
-  })
+    const code = await Code.create({
+      data: data,
+      user: user._id,
+      user_updatedAt: user.updatedAt.getTime(),
+    })
 
-  await transporter.sendMail({
-    from: `"Tic-Tac-Toe - Code" <${EMAIL_USER}>`,
-    to: user.email,
-    subject: 'Tic-Tac-Toe - Code',
-    html: `<div>${code.data}</div>`,
-  })
+    await transporter.sendMail({
+      from: `"Tic-Tac-Toe - Code" <${EMAIL_USER}>`,
+      to: user.email,
+      subject: 'Tic-Tac-Toe - Code',
+      html: `<div>${code.data}</div>`,
+    })
 
-  res.status(201).json({ success: true })
+    res.status(201).json({ success: true })
+  } catch (error) {
+    next(createError(500, 'Something has gone wrong', { expose: true }))
+  }
 }
 
 // isValidCode
@@ -132,22 +161,26 @@ const createCode = async (req, res, next) => {
 const isValidCodeValidation = validate.body(isValidCodeSchema)
 
 const isValidCode = async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email })
-  if (!user) return next(createError(404, 'User not found', { expose: true }))
-  console.log(await Code.findOne({}))
-  const code = await Code.findOne({
-    data: req.body.code,
-    user: user._id,
-    user_updatedAt: user.updatedAt.getTime(),
-  })
+  try {
+    const user = await User.findOne({ email: req.body.email })
+    if (!user) return next(createError(404, 'User not found', { expose: true }))
+    console.log(await Code.findOne({}))
+    const code = await Code.findOne({
+      data: req.body.code,
+      user: user._id,
+      user_updatedAt: user.updatedAt.getTime(),
+    })
 
-  console.log(code)
-  if (!code) return next(createError(400, 'Invalid code'))
+    console.log(code)
+    if (!code) return next(createError(400, 'Invalid code'))
 
-  req.user = user._id
-  req.code = code.data
+    req.user = user._id
+    req.code = code.data
 
-  next()
+    next()
+  } catch (error) {
+    next(createError(500, 'Something has gone wrong', { expose: true }))
+  }
 }
 
 // code
@@ -160,12 +193,16 @@ const code = (req, res) => {
 
 const resetPasswordValidation = validate.body(resetPasswordSchema)
 
-const resetPassword = async (req, res) => {
-  const salt = await bcrypt.genSalt(10)
-  const password = await bcrypt.hash(req.body.password, salt)
-  await User.updateOne({ _id: req.user }, { password })
+const resetPassword = async (req, res, next) => {
+  try {
+    const salt = await bcrypt.genSalt(10)
+    const password = await bcrypt.hash(req.body.password, salt)
+    await User.updateOne({ _id: req.user }, { password })
 
-  res.status(200).json({ success: true })
+    res.status(200).json({ success: true })
+  } catch (error) {
+    next(createError(500, 'Something has gone wrong', { expose: true }))
+  }
 }
 
 module.exports = {
@@ -173,6 +210,8 @@ module.exports = {
   signIn,
   signUpValidation,
   signUp,
+  isAuthenticatedValidation,
+  isAuthenticated,
   createCodeValidation,
   createCode,
   isValidCodeValidation,
