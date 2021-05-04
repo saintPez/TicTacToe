@@ -164,14 +164,12 @@ const isValidCode = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email })
     if (!user) return next(createError(404, 'User not found', { expose: true }))
-    console.log(await Code.findOne({}))
     const code = await Code.findOne({
       data: req.body.code,
       user: user._id,
       user_updatedAt: user.updatedAt.getTime(),
     })
 
-    console.log(code)
     if (!code) return next(createError(400, 'Invalid code'))
 
     req.user = user._id
