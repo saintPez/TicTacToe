@@ -12,11 +12,23 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "npm run start --workspace=api",
     "dev": "npm run dev --workspace=api",
+    "start": "npm run start --workspace=api",
+    "app": "npm run start --workspace=app",
+    "build": "npm run build --workspace=app",
+    "test:app": "npm run test --workspace=app",
+    "eject": "npm run eject --workspace=app",
     "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/cli": "12.1.1",
+    "@commitlint/config-conventional": "12.1.1",
+    "eslint": "7.25.0",
+    "eslint-config-prettier": "8.3.0",
+    "husky": "6.0.0",
+    "prettier": "2.2.1"
+  }
 }
