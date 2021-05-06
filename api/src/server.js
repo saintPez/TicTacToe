@@ -52,10 +52,9 @@ io.on('connection', async (socket) => {
       }
 
       rooms(data.id, data.name)
+      socket.join(data.name)
 
       socket.emit('room-' + data.id)
     }
   })
-
-  socket.on('update-list-room', async () => {})
 })
