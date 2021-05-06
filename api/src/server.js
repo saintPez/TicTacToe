@@ -28,16 +28,18 @@ io.on('connection', async (socket) => {
   //Players
 
   socket.on('new-player', async (data) => {
-    if (players.session) {
-      players.session.username = data.username
-      players.session.email = data.email
-      players.session.password = data.password
-    } else {
-      players.session = data.session
-      players.session.username = data.username
-      players.session.email = data.email
-      players.session.password = data.password
+    var new_player = (id, u, e, p) => {
+      if (players[id]) {
+        //return false
+      } else {
+        players[id] = {}
+      }
+      players[id].username = u
+      players[id].email = e
+      players[id].password = p
     }
+
+    new_player(data.id, data.username, data.email, data.password)
   })
 
   //Game
@@ -53,8 +55,6 @@ io.on('connection', async (socket) => {
 
       rooms(data.id, data.name)
       socket.join(data.name)
-
-      socket.emit('room-' + data.id)
     }
   })
 })
