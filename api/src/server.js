@@ -14,7 +14,7 @@ require('./database')
 // Server
 
 const server = app.listen(PORT, async () => {
-  console.log(`> Server running on port ${PORT}`)
+  console.log(`Info: Server running on port ${PORT}`)
 })
 
 // Sockets
