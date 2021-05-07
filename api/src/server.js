@@ -25,9 +25,9 @@ const queue = []
 const io = new Server(server)
 
 io.on('connection', (socket) => {
-  socket.on('new-user', (data) => {
-    socket.user = data.user
-    users.push({ id: socket.id, user: data.user })
+  socket.on('new-user', (userId) => {
+    socket.user = userId
+    users.push({ id: socket.id, user: userId })
   })
 
   socket.on('new-room', (room) => {
