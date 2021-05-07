@@ -1,6 +1,7 @@
 header {
   background-color: #272522;
   width: 768px;
+  height: 46px;
   border-radius: 2em;
   margin: auto;
   display: flex;
@@ -10,7 +11,7 @@ header {
 
 .item {
   padding: 8px 16px;
-  height: 30px;
+  height: 46px;
   color: #ffffffa6;
   font-size: 14px;
   font-weight: 600;

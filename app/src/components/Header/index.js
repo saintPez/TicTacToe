@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 import { HashtagIcon } from '@heroicons/react/solid'
 import { BookOpenIcon, UserIcon, UserAddIcon } from '@heroicons/react/outline'
 
-import './Header.css'
+import './styles.css'
 
-function Header({ user }) {
+function Header() {
+  const user = useSelector((state) => state.user)
   return (
     <header>
-      {user ? (
+      {user.account ? (
         <>
           <a href="#user" className="item left">
             <span className="icon avatar">S</span>
