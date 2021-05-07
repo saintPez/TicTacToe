@@ -3,6 +3,8 @@ config({ path: `.env.${process.env.NODE_ENV}` })
 
 const app = require('./app')
 
+const { Server } = require('socket.io')
+
 const { PORT } = require('./env')
 
 // Database
@@ -15,46 +17,44 @@ const server = app.listen(PORT, async () => {
   console.log(`> Server running on port ${PORT}`)
 })
 
-//Sockets
+// Sockets
 
-const socketio = require('socket.io')
-const io = socketio(server)
+const users = []
+const queue = []
 
-//Vars settings
+const io = new Server(server)
 
-var players = {}
-
-io.on('connection', async (socket) => {
-  //Players
-
-  socket.on('new-player', async (data) => {
-    var new_player = (id, u, e, p) => {
-      if (players[id]) {
-        //return false
-      } else {
-        players[id] = {}
-      }
-      players[id].username = u
-      players[id].email = e
-      players[id].password = p
-    }
-
-    new_player(data.id, data.username, data.email, data.password)
+io.on('connection', (socket) => {
+  socket.on('new-user', (data) => {
+    socket.user = data.user
+    users.push({ id: socket.id, user: data.user })
   })
 
-  //Game
-
-  socket.on('new-room', async (data) => {
-    if (rooms.id == data.id) {
-      //Set data in rooms.id = {} object
-
-      var rooms = (id, name) => {
-        rooms[id] = {}
-        rooms[id].name = name
-      }
-
-      rooms(data.id, data.name)
-      socket.join(data.name)
+  socket.on('new-room', (room) => {
+    if (room) {
+      socket.join(room)
+    } else {
+      const code = 'createCode'
+      socket.join(code)
     }
+  })
+
+  socket.on('disconnect', () => {
+    removeUserFromUsers(socket.user)
+    removeUserFromQueue(socket.user)
   })
 })
+
+const removeUserFromUsers = (socketId) => {
+  users.splice(
+    users.findIndex((user) => user.id === socketId),
+    1
+  )
+}
+
+const removeUserFromQueue = (socketId) => {
+  queue.splice(
+    queue.findIndex((user) => user.id === socketId),
+    1
+  )
+}
