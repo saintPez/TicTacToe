@@ -1,9 +1,11 @@
-import { useState } from 'react'
-
-import axios from 'axios'
+import { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Joi from 'joi'
 
+import { setUser } from '../../actions/user.actions'
+import instance from '../../axios'
 import validate from '../../utils/validate'
 
 import './styles.css'
@@ -23,7 +25,14 @@ const passwordSchema = Joi.object({
 })
 
 function SignUp() {
+  const user = useSelector((state) => state.user)
+  const history = useHistory()
+  const dispatch = useDispatch()
   const [data, setData] = useState({ name: '', email: '', password: '' })
+
+  useEffect(() => {
+    if (user.account) history.push('/home')
+  })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -37,20 +46,23 @@ function SignUp() {
         data.errorPassword?.status
       )
     ) {
-      console.log('ok')
-      try {
-        const { data: json } = await axios.post(
-          'http://localhost:3001/api/auth/signUp',
-          {
-            name: data.name,
-            email: data.email,
-            password: data.password,
-          }
-        )
-        console.log(json)
-      } catch (error) {
-        console.log('error')
-      }
+      instance
+        .post('/auth/signUp', {
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        })
+        .then((response) => {
+          dispatch(
+            setUser({
+              access_token: response.data.access_token,
+              refresh_token: response.data.refresh_token,
+            })
+          )
+        })
+        .catch((error) => {
+          console.log(error.response.data)
+        })
     }
   }
 
