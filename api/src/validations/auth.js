@@ -30,6 +30,12 @@ const resetPasswordSchema = Joi.object({
   password: Joi.string().min(5).required(),
 })
 
+const refreshSchema = Joi.object({
+  refresh_token: Joi.string()
+    .pattern(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/)
+    .required(),
+})
+
 module.exports = {
   signInSchema,
   signUpSchema,
@@ -37,4 +43,5 @@ module.exports = {
   createCodeSchema,
   isValidCodeSchema,
   resetPasswordSchema,
+  refreshSchema,
 }
