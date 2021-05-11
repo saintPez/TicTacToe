@@ -14,7 +14,7 @@ import SignUp from './pages/SignUp/'
 function App() {
   return (
     <Router>
-      <Header user={true} />
+      <Header />
       <Switch>
         <Redirect exact from="/" to="/home" />
         <Route path="/home">

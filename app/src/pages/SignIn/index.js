@@ -1,35 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+import axios from 'axios'
+
 import Joi from 'joi'
 
-/*
-import Joi from 'joi'
-
-export const signInSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().min(5).required(),
-})
-
-export const signUpSchema = Joi.object({
-  name: Joi.string().min(3).required(),
-  email: Joi.string().email().required(),
-  password: Joi.string().min(5).required(),
-})
-
-export const createCodeSchema = Joi.object({
-  email: Joi.string().email().required(),
-})
-
-export const isValidCodeSchema = Joi.object({
-  code: Joi.string().min(6).max(6).required(),
-})
-
-export const resetPasswordSchema = Joi.object({
-  password: Joi.string().min(5).required(),
-})
-
-*/
+import validate from '../../utils/validate'
 
 import './styles.css'
 
@@ -43,15 +19,10 @@ const passwordSchema = Joi.object({
   password: Joi.string().min(5).required(),
 })
 
-const formatMessage = (text) => {
-  const message = text.replace(/"/g, '')
-  return message.charAt(0).toUpperCase() + message.slice(1)
-}
-
 function SignIn() {
-  const [data, setData] = useState({})
+  const [data, setData] = useState({ email: '', password: '' })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (
       !(
@@ -62,6 +33,18 @@ function SignIn() {
       )
     ) {
       console.log('ok')
+      try {
+        const { data: json } = await axios.post(
+          'http://localhost:3001/api/auth/signIn',
+          {
+            email: data.email,
+            password: data.password,
+          }
+        )
+        console.log(json)
+      } catch (error) {
+        console.log('error')
+      }
     }
   }
 
@@ -76,27 +59,13 @@ function SignIn() {
                 setData({ ...data, email: e.target.value })
               }}
               onBlur={(e) => {
-                const result = emailSchema.validate({
-                  email: e.target.value,
+                const result = validate(emailSchema, e.target.value)
+                setData({
+                  ...data,
+                  errorEmail: {
+                    ...result,
+                  },
                 })
-                if (result.error) {
-                  const message = formatMessage(result.error.details[0].message)
-
-                  setData({
-                    ...data,
-                    errorEmail: {
-                      status: true,
-                      message,
-                    },
-                  })
-                } else {
-                  setData({
-                    ...data,
-                    errorEmail: {
-                      status: false,
-                    },
-                  })
-                }
               }}
               className={data.errorEmail?.status ? 'error' : ''}
               placeholder="Email"
@@ -113,27 +82,13 @@ function SignIn() {
                 setData({ ...data, password: e.target.value })
               }}
               onBlur={(e) => {
-                const result = passwordSchema.validate({
-                  password: e.target.value,
+                const result = validate(passwordSchema, e.target.value)
+                setData({
+                  ...data,
+                  errorPassword: {
+                    ...result,
+                  },
                 })
-                if (result.error) {
-                  const message = formatMessage(result.error.details[0].message)
-
-                  setData({
-                    ...data,
-                    errorPassword: {
-                      status: true,
-                      message,
-                    },
-                  })
-                } else {
-                  setData({
-                    ...data,
-                    errorPassword: {
-                      status: false,
-                    },
-                  })
-                }
               }}
               className={data.errorPassword?.status ? 'error' : ''}
               placeholder="Password"
