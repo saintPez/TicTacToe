@@ -59,7 +59,12 @@ function SignIn() {
                 setData({ ...data, email: e.target.value })
               }}
               onBlur={(e) => {
-                const result = validate(emailSchema, e.target.value)
+                const result = validate(
+                  emailSchema.validate({
+                    email: e.target.value,
+                  })
+                )
+
                 setData({
                   ...data,
                   errorEmail: {
@@ -82,7 +87,11 @@ function SignIn() {
                 setData({ ...data, password: e.target.value })
               }}
               onBlur={(e) => {
-                const result = validate(passwordSchema, e.target.value)
+                const result = validate(
+                  passwordSchema.validate({
+                    password: e.target.value,
+                  })
+                )
                 setData({
                   ...data,
                   errorPassword: {

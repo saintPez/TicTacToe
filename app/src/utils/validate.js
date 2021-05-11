@@ -3,12 +3,9 @@ export const formatMessage = (text) => {
   return message.charAt(0).toUpperCase() + message.slice(1)
 }
 
-const validate = (schema, value) => {
-  const result = schema.validate({
-    email: value,
-  })
-  if (result.error) {
-    const message = formatMessage(result.error.details[0].message)
+const validate = (schemaResults) => {
+  if (schemaResults.error) {
+    const message = formatMessage(schemaResults.error.details[0].message)
 
     return {
       status: true,
