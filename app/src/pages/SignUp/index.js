@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import { useCookies } from 'react-cookie'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Joi from 'joi'
 
-import { setUser } from '../../actions/user.actions'
+import { updateUser } from '../../actions/user.actions'
 import instance from '../../axios'
 import validate from '../../utils/validate'
 
@@ -25,6 +26,7 @@ const passwordSchema = Joi.object({
 })
 
 function SignUp() {
+  const [, setCookie] = useCookies([])
   const user = useSelector((state) => state.user)
   const history = useHistory()
   const dispatch = useDispatch()
@@ -53,8 +55,19 @@ function SignUp() {
           password: data.password,
         })
         .then((response) => {
+          const now = new Date()
+          setCookie('Authorization', response.data.access_token, {
+            path: '/',
+            expires: new Date(now.getTime() + response.data.expires_in * 1000),
+          })
+          setCookie('refresh_token', response.data.refresh_token, {
+            path: '/',
+            expires: new Date(
+              now.getTime() + response.data.refresh_token_expires_in * 1000
+            ),
+          })
           dispatch(
-            setUser({
+            updateUser({
               access_token: response.data.access_token,
               refresh_token: response.data.refresh_token,
             })
