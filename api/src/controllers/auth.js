@@ -15,6 +15,7 @@ const {
   createCodeSchema,
   isValidCodeSchema,
   resetPasswordSchema,
+  refreshSchema,
 } = require('../validations/auth')
 
 const transporter = require('../mailer')
@@ -50,7 +51,7 @@ const signIn = async (req, res, next) => {
       { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
     )
 
-    res.json({
+    res.status(200).json({
       success: true,
       access_token,
       token_type: 'Bearer',
@@ -93,7 +94,7 @@ const signUp = async (req, res, next) => {
       { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
     )
 
-    res.json({
+    res.status(201).json({
       success: true,
       access_token,
       token_type: 'Bearer',
@@ -112,9 +113,17 @@ const isAuthenticated = async (req, res, next) => {
   try {
     const { authorization } = req.headers
     const access_token = authorization.split(' ')[1]
-    const { _id } = await jwt.verify(access_token, ACCESS_TOKEN_SECRET)
+    const { _id, updatedAt } = await jwt.verify(
+      access_token,
+      ACCESS_TOKEN_SECRET
+    )
 
-    req.user = _id
+    const user = await User.findOne({ _id, updatedAt })
+    if (!user) return next(createError(401, 'Invalid token', { expose: true }))
+
+    user.password = undefined
+
+    req.user = user
 
     next()
   } catch (error) {
@@ -203,6 +212,49 @@ const resetPassword = async (req, res, next) => {
   }
 }
 
+// refresh
+
+const refreshValidation = validate.body(refreshSchema)
+
+const refresh = async (req, res, next) => {
+  try {
+    const { refresh_token } = req.body
+
+    const payload = jwt.decode(refresh_token)
+
+    const user = await User.findOne({ _id: payload._id })
+    if (!user)
+      return next(createError(401, 'Invalid refresh token', { expose: true }))
+
+    await jwt.verify(
+      refresh_token,
+      REFRESH_TOKEN_SECRET + user.updatedAt.getTime()
+    )
+
+    const access_token = await jwt.sign(
+      { _id: user._id, updatedAt: user.updatedAt.getTime() },
+      ACCESS_TOKEN_SECRET,
+      { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
+    )
+    const new_refresh_token = await jwt.sign(
+      { _id: user._id },
+      REFRESH_TOKEN_SECRET + user.updatedAt.getTime(),
+      { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
+    )
+
+    res.status(200).json({
+      success: true,
+      access_token,
+      token_type: 'Bearer',
+      expires_in: ACCESS_TOKEN_EXPIRES_IN,
+      refresh_token: new_refresh_token,
+      refresh_token_expires_in: REFRESH_TOKEN_EXPIRES_IN,
+    })
+  } catch (error) {
+    next(createError(500, 'Something has gone wrong', { expose: true }))
+  }
+}
+
 module.exports = {
   signInValidation,
   signIn,
@@ -217,4 +269,6 @@ module.exports = {
   code,
   resetPasswordValidation,
   resetPassword,
+  refreshValidation,
+  refresh,
 }
