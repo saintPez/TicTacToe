@@ -51,7 +51,7 @@ const signIn = async (req, res, next) => {
       { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
     )
 
-    res.json({
+    res.status(200).json({
       success: true,
       access_token,
       token_type: 'Bearer',
@@ -94,7 +94,7 @@ const signUp = async (req, res, next) => {
       { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
     )
 
-    res.json({
+    res.status(201).json({
       success: true,
       access_token,
       token_type: 'Bearer',
@@ -113,9 +113,17 @@ const isAuthenticated = async (req, res, next) => {
   try {
     const { authorization } = req.headers
     const access_token = authorization.split(' ')[1]
-    const { _id } = await jwt.verify(access_token, ACCESS_TOKEN_SECRET)
+    const { _id, updatedAt } = await jwt.verify(
+      access_token,
+      ACCESS_TOKEN_SECRET
+    )
 
-    req.user = _id
+    const user = await User.findOne({ _id, updatedAt })
+    if (!user) return next(createError(401, 'Invalid token', { expose: true }))
+
+    user.password = undefined
+
+    req.user = user
 
     next()
   } catch (error) {
@@ -234,7 +242,7 @@ const refresh = async (req, res, next) => {
       { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
     )
 
-    res.json({
+    res.status(200).json({
       success: true,
       access_token,
       token_type: 'Bearer',
