@@ -8,6 +8,9 @@ const {
   updateUserIdValidation,
   updateUserValidation,
   updateUserId,
+  deleteUserIdValidation,
+  deleteUserValidation,
+  deleteUserId,
 } = require('../controllers/user')
 
 const router = Router()
@@ -20,6 +23,13 @@ router.put(
   updateUserIdValidation,
   updateUserValidation,
   updateUserId
+)
+router.delete(
+  '/:id',
+  isAuthenticated,
+  deleteUserIdValidation,
+  deleteUserValidation,
+  deleteUserId
 )
 
 module.exports = router

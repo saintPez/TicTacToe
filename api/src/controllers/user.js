@@ -9,6 +9,8 @@ const {
   getUserIdSchema,
   updateUserIdSchema,
   updateUserSchema,
+  deleteUserIdSchema,
+  deleteUserSchema,
 } = require('../validations/user')
 
 const {
@@ -100,6 +102,26 @@ const updateUserId = async (req, res, next) => {
   }
 }
 
+const deleteUserIdValidation = validate.params(deleteUserIdSchema)
+const deleteUserValidation = validate.body(deleteUserSchema)
+
+const deleteUserId = async (req, res, next) => {
+  try {
+    const account = await User.findOne({ _id: req.user._id })
+    if (
+      req.user.admin &&
+      !(await bcrypt.compare(req.body.password, account?.password))
+    )
+      return next(createError(403, 'Access denied', { expose: true }))
+
+    await User.deleteOne({ _id: req.params.id })
+
+    res.status(200).json({ success: true })
+  } catch (error) {
+    next(createError(500, 'Something has gone wrong', { expose: true }))
+  }
+}
+
 module.exports = {
   getUser,
   getUserIdValidation,
@@ -107,4 +129,7 @@ module.exports = {
   updateUserIdValidation,
   updateUserValidation,
   updateUserId,
+  deleteUserIdValidation,
+  deleteUserValidation,
+  deleteUserId,
 }
