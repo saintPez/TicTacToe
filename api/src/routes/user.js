@@ -7,13 +7,19 @@ const {
   getUserId,
   updateUserIdValidation,
   updateUserValidation,
-  updateUserId
+  updateUserId,
 } = require('../controllers/user')
 
 const router = Router()
 
 router.get('/', isAuthenticated, getUser)
 router.get('/:id', isAuthenticated, getUserIdValidation, getUserId)
-router.put('/:id', isAuthenticated, updateUserIdValidation, updateUserValidation, updateUserId)
+router.put(
+  '/:id',
+  isAuthenticated,
+  updateUserIdValidation,
+  updateUserValidation,
+  updateUserId
+)
 
 module.exports = router
