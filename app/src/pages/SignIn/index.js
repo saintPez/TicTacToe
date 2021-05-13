@@ -67,7 +67,13 @@ function SignIn() {
           )
         })
         .catch((error) => {
-          console.log(error.response?.data)
+          setData({
+            ...data,
+            errorEmail: {
+              status: true,
+              message: error.response?.data.message,
+            },
+          })
         })
     }
   }

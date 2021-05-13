@@ -167,14 +167,14 @@ const createCode = async (req, res, next) => {
 
 // isValidCode
 
-const isValidCodeValidation = validate.body(isValidCodeSchema)
+const isValidCodeValidation = validate.params(isValidCodeSchema)
 
 const isValidCode = async (req, res, next) => {
   try {
-    const user = await User.findOne({ email: req.body.email })
+    const user = await User.findOne({ email: req.params.email })
     if (!user) return next(createError(404, 'User not found', { expose: true }))
     const code = await Code.findOne({
-      data: req.body.code,
+      data: req.params.code,
       user: user._id,
       user_updatedAt: user.updatedAt.getTime(),
     })
