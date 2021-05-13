@@ -1,8 +1,6 @@
 const environments = {
   PORT: process.env.PORT || '3000',
-  MONGO_URI:
-    process.env.MONGO_URI ||
-    'mongodb://[username:password@]host1[:port1][,...hostN[:portN]][/[defaultauthdb][?options]]',
+  MONGO_URI: process.env.MONGO_URI || 'mongodb://localhost:27017/TicTacToe',
   ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || 'ACCESS_TOKEN_SECRET',
   ACCESS_TOKEN_EXPIRES_IN:
     parseInt(process.env.ACCESS_TOKEN_EXPIRES_IN) || 86400,
