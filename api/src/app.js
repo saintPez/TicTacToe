@@ -5,6 +5,7 @@ const helmet = require('helmet')
 const createError = require('http-errors')
 
 const authRoutes = require('./routes/auth')
+const userRoutes = require('./routes/user')
 
 // App
 
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/auth', authRoutes)
+app.use('/api/user', userRoutes)
 
 // Errors
 
