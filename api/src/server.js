@@ -36,7 +36,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('chat-global', ({ message, user }) => {
-    socket.broadcast.emit({ message, user })
+    socket.broadcast.emit('chat-global', { message, user })
   })
 
   socket.on('new-room', (room) => {
