@@ -30,6 +30,10 @@ io.on('connection', (socket) => {
     users.push({ id: socket.id, user: userId })
   })
 
+  socket.on('chat-global', (message) => {
+    socket.broadcast.emit(message)
+  })
+
   socket.on('new-room', (room) => {
     if (room) {
       socket.join(room)
