@@ -11,6 +11,8 @@ const {
   code,
   resetPasswordValidation,
   resetPassword,
+  refreshValidation,
+  refresh,
 } = require('../controllers/auth')
 
 const router = Router()
@@ -18,13 +20,14 @@ const router = Router()
 router.post('/signin', signInValidation, signIn)
 router.post('/signup', signUpValidation, signUp)
 router.post('/code', createCodeValidation, createCode)
-router.get('/code', isValidCodeValidation, isValidCode, code)
+router.get('/code/:email/:code', isValidCodeValidation, isValidCode, code)
 router.post(
-  '/password',
+  '/password/:email/:code',
   isValidCodeValidation,
   isValidCode,
   resetPasswordValidation,
   resetPassword
 )
+router.post('/refresh', refreshValidation, refresh)
 
 module.exports = router

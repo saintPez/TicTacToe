@@ -1,35 +1,13 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useHistory } from 'react-router-dom'
+import { useCookies } from 'react-cookie'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Joi from 'joi'
 
-/*
-import Joi from 'joi'
-
-export const signInSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().min(5).required(),
-})
-
-export const signUpSchema = Joi.object({
-  name: Joi.string().min(3).required(),
-  email: Joi.string().email().required(),
-  password: Joi.string().min(5).required(),
-})
-
-export const createCodeSchema = Joi.object({
-  email: Joi.string().email().required(),
-})
-
-export const isValidCodeSchema = Joi.object({
-  code: Joi.string().min(6).max(6).required(),
-})
-
-export const resetPasswordSchema = Joi.object({
-  password: Joi.string().min(5).required(),
-})
-
-*/
+import { updateUser } from '../../actions/user.actions'
+import instance from '../../axios'
+import validate from '../../utils/validate'
 
 import './styles.css'
 
@@ -43,15 +21,18 @@ const passwordSchema = Joi.object({
   password: Joi.string().min(5).required(),
 })
 
-const formatMessage = (text) => {
-  const message = text.replace(/"/g, '')
-  return message.charAt(0).toUpperCase() + message.slice(1)
-}
-
 function SignIn() {
-  const [data, setData] = useState({})
+  const [, setCookie] = useCookies([])
+  const user = useSelector((state) => state.user)
+  const history = useHistory()
+  const dispatch = useDispatch()
+  const [data, setData] = useState({ email: '', password: '' })
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (user.account) history.push('/home')
+  })
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (
       !(
@@ -61,7 +42,39 @@ function SignIn() {
         data.errorPassword?.status
       )
     ) {
-      console.log('ok')
+      instance
+        .post('/auth/signIn', {
+          email: data.email,
+          password: data.password,
+        })
+        .then((response) => {
+          const now = new Date()
+          setCookie('Authorization', response.data.access_token, {
+            path: '/',
+            expires: new Date(now.getTime() + response.data.expires_in * 1000),
+          })
+          setCookie('refresh_token', response.data.refresh_token, {
+            path: '/',
+            expires: new Date(
+              now.getTime() + response.data.refresh_token_expires_in * 1000
+            ),
+          })
+          dispatch(
+            updateUser({
+              access_token: response.data.access_token,
+              refresh_token: response.data.refresh_token,
+            })
+          )
+        })
+        .catch((error) => {
+          setData({
+            ...data,
+            errorEmail: {
+              status: true,
+              message: error.response?.data.message,
+            },
+          })
+        })
     }
   }
 
@@ -76,27 +89,18 @@ function SignIn() {
                 setData({ ...data, email: e.target.value })
               }}
               onBlur={(e) => {
-                const result = emailSchema.validate({
-                  email: e.target.value,
-                })
-                if (result.error) {
-                  const message = formatMessage(result.error.details[0].message)
+                const result = validate(
+                  emailSchema.validate({
+                    email: e.target.value,
+                  })
+                )
 
-                  setData({
-                    ...data,
-                    errorEmail: {
-                      status: true,
-                      message,
-                    },
-                  })
-                } else {
-                  setData({
-                    ...data,
-                    errorEmail: {
-                      status: false,
-                    },
-                  })
-                }
+                setData({
+                  ...data,
+                  errorEmail: {
+                    ...result,
+                  },
+                })
               }}
               className={data.errorEmail?.status ? 'error' : ''}
               placeholder="Email"
@@ -113,27 +117,17 @@ function SignIn() {
                 setData({ ...data, password: e.target.value })
               }}
               onBlur={(e) => {
-                const result = passwordSchema.validate({
-                  password: e.target.value,
+                const result = validate(
+                  passwordSchema.validate({
+                    password: e.target.value,
+                  })
+                )
+                setData({
+                  ...data,
+                  errorPassword: {
+                    ...result,
+                  },
                 })
-                if (result.error) {
-                  const message = formatMessage(result.error.details[0].message)
-
-                  setData({
-                    ...data,
-                    errorPassword: {
-                      status: true,
-                      message,
-                    },
-                  })
-                } else {
-                  setData({
-                    ...data,
-                    errorPassword: {
-                      status: false,
-                    },
-                  })
-                }
               }}
               className={data.errorPassword?.status ? 'error' : ''}
               placeholder="Password"

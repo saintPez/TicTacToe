@@ -7,17 +7,13 @@ const { Server } = require('socket.io')
 
 const { PORT } = require('./env')
 
-const bcrypt = require('bcrypt')
+//const bcrypt = require('bcrypt')
 
 const axios = require('axios')
 
 // const generateIntervalObject = require('./utils/utils')
 
-// Database
-
 require('./database')
-
-// Server
 
 const server = app.listen(PORT, async () => {
   console.log(`Info: Server running on port ${PORT}`)
@@ -44,24 +40,19 @@ const io = new Server(server)
 io.on('connection', (socket) => {
   console.log('New connection')
 
-  socket.on('emit-room', (data) => {
-    console.log(data)
-  })
-
   socket.on('new-user', (userId) => {
     socket.user = userId
     users.push({ id: socket.id, user: userId })
   })
 
+  socket.on('chat-global', ({ message, user }) => {
+    socket.broadcast.emit('chat-global', { message, user })
+  })
+
   socket.on('new-room', (room) => {
-    if (room) {
-      socket.join(room)
-    } else {
-      var code = 'createCode'
-      var salt = bcrypt.genSalt(10)
-      code = bcrypt.hash(code, salt)
-      socket.join(code)
-    }
+    rooms[room] = {}
+
+    console.log(rooms)
   })
 
   socket.on('check-in', (user) => {
