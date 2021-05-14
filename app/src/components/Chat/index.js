@@ -27,6 +27,7 @@ function Chat() {
   }
 
   socket.on('chat-global', ({ message, user }) => {
+    console.log('se')
     setData({ ...data, messages: [...data.messages, { message, user }] })
   })
 
@@ -36,7 +37,7 @@ function Chat() {
         <h1>Chat</h1>
         <ol className="home-chat-messages">
           {data.messages.map((message, index) => (
-            <li className="chat">
+            <li key={index} className="chat">
               <div className={message.me ? 'me' : 'you'}>
                 <div className="chat-title">{message.user}</div>
                 <div className="chat-message">{message.message}</div>
