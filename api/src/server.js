@@ -22,7 +22,12 @@ const server = app.listen(PORT, async () => {
 const users = []
 const queue = []
 
-const io = new Server(server)
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+})
 
 io.on('connection', (socket) => {
   socket.on('new-user', (userId) => {
@@ -31,7 +36,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('chat-global', ({ message, user }) => {
-    socket.broadcast.emit({ message, user })
+    socket.broadcast.emit('chat-global', { message, user })
   })
 
   socket.on('new-room', (room) => {
