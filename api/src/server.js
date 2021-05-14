@@ -1,5 +1,5 @@
 const { config } = require('dotenv')
-config({ path: `.env.${process.env.NODE_ENV}` })
+config()
 
 const app = require('./app')
 
