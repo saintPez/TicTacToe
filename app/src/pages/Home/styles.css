@@ -5,10 +5,11 @@
   display: grid;
   margin: 0 auto;
   gap: 24px;
-  max-width: 1082px;
+  max-width: 1440px;
   width: 100%;
   font-size: 16px;
   color: #ffffffa6;
+  padding: 15px;
 }
 
 .home h1 {
@@ -49,10 +50,9 @@
   font-weight: 700;
 }
 
-@media (min-width: 960px) {
+@media (min-width: 769px) {
   .home {
     align-content: start;
-    padding: 15px;
     row-gap: 20px;
     grid-template-columns: minmax(0, 1fr) 300px;
   }
