@@ -22,7 +22,12 @@ const server = app.listen(PORT, async () => {
 const users = []
 const queue = []
 
-const io = new Server(server)
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+})
 
 io.on('connection', (socket) => {
   socket.on('new-user', (userId) => {
