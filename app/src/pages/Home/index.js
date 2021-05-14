@@ -1,6 +1,8 @@
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import Chat from '../../components/Chat'
+
 import './styles.css'
 
 function Home() {
@@ -38,33 +40,7 @@ function Home() {
               <Link to="/settings">Settings</Link>
             </div>
           </div>
-          <div className="home-item home-chat">
-            <h1>Chat</h1>
-            <ol className="home-chat-messages">
-              <li className="chat">
-                <div className="me">
-                  <div className="chat-title">Santiago</div>
-                  <div className="chat-message">hola</div>
-                </div>
-              </li>
-              <li className="chat">
-                <div className="you">
-                  <div className="chat-title">Gomes</div>
-                  <div className="chat-message">hi</div>
-                </div>
-              </li>
-            </ol>
-            <form
-              className="home-chat-form"
-              onSubmit={(e) => {
-                e.preventDefault()
-                console.log('se')
-              }}
-            >
-              <input />
-              <button className="home-chat-send">{'>'}</button>
-            </form>
-          </div>
+          <Chat />
         </div>
       </main>
     </>
