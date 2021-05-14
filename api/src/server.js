@@ -30,8 +30,8 @@ io.on('connection', (socket) => {
     users.push({ id: socket.id, user: userId })
   })
 
-  socket.on('chat-global', (message) => {
-    socket.broadcast.emit(message)
+  socket.on('chat-global', ({ message, user }) => {
+    socket.broadcast.emit({ message, user })
   })
 
   socket.on('new-room', (room) => {
