@@ -1,9 +1,16 @@
+const bcrypt = require('bcrypt')
 const createError = require('http-errors')
 
+const User = require('../models/user')
 const Game = require('../models/game')
 
 const validate = require('../lib/validate')
-const { getGamesSchema } = require('../validations/game')
+const {
+  getGamesSchema,
+  getGameIdSchema,
+  deleteGameIdSchema,
+  deleteGameSchema,
+} = require('../validations/game')
 
 const getGamesValidation = validate.query(getGamesSchema)
 
@@ -33,7 +40,45 @@ const getGames = async (req, res, next) => {
   }
 }
 
+const getGameIdValidation = validate.params(getGameIdSchema)
+
+const getGameId = async (req, res, next) => {
+  try {
+    const game = await Game.findOne({ _id: req.params.id })
+    if (!game) return next(createError(404, 'Game not found', { expose: true }))
+
+    res.status(200).json({ success: true, game })
+  } catch (error) {
+    next(createError(500, 'Something has gone wrong', { expose: true }))
+  }
+}
+
+const deleteGameIdValidation = validate.params(deleteGameIdSchema)
+const deleteGameValidation = validate.body(deleteGameSchema)
+
+const deleteGame = async (req, res, next) => {
+  try {
+    const account = await User.findOne({ _id: req.user._id })
+    if (
+      !req.user.admin ||
+      !(await bcrypt.compare(req.body.password, account?.password))
+    )
+      return next(createError(403, 'Access denied', { expose: true }))
+
+    await Game.deleteOne({ _id: req.params.id })
+
+    res.status(200).json({ success: true })
+  } catch (error) {
+    next(createError(500, 'Something has gone wrong', { expose: true }))
+  }
+}
+
 module.exports = {
   getGamesValidation,
   getGames,
+  getGameIdValidation,
+  getGameId,
+  deleteGameIdValidation,
+  deleteGameValidation,
+  deleteGame,
 }

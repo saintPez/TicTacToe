@@ -31,7 +31,7 @@ const gameSchema = new Schema({
   result: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: false,
+    required: true,
   },
 })
 
