@@ -12,7 +12,6 @@ function User() {
     instance
       .get(`/user/${id}`)
       .then((response) => {
-        console.log(response)
         setUser({ ...response.data.user })
       })
       .catch((error) => {
