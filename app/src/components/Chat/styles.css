@@ -1,11 +1,11 @@
-.home-chat {
+.main-chat {
   display: flex;
   flex-direction: column;
   height: 500px;
   overflow: hidden;
 }
 
-.home-chat form {
+.main-chat form {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -15,17 +15,17 @@
   align-items: inherit;
 }
 
-.home-chat input {
+.main-chat input {
   margin: 0;
   margin-top: 16px;
   padding-right: 50px;
 }
 
-.home-chat-form {
+.main-chat-form {
   position: relative;
 }
 
-.home-chat-send {
+.main-chat-send {
   position: absolute;
   top: 16px;
   right: 0;
@@ -42,28 +42,28 @@
   color: #000;
 }
 
-.home-chat-send:hover,
-.home-chat-send:focus {
+.main-chat-send:hover,
+.main-chat-send:focus {
   background-color: #fff;
 }
 
-.home-chat-messages {
+.main-chat-messages {
   background-color: #1f1e1b;
   height: 100%;
   overflow-y: auto;
 }
 
-.home-chat-messages li {
+.main-chat-messages li {
   overflow: hidden;
   width: 100%;
   padding: 5px 10px;
 }
 
-.chat {
+.main-chat-message {
   width: 100%;
 }
 
-.chat-title {
+.main-chat-message-title {
   font-size: 16px;
   font-weight: 700;
 }

@@ -70,35 +70,39 @@ function Header() {
   }, [cookies.Authorization])
 
   return (
-    <header>
+    <header className="header">
       {user.account ? (
         <>
-          <a href="#user" className="item left">
-            <span className="icon avatar">
+          <Link
+            to={`/user/${user._id}`}
+            className="header-item header-item-left"
+          >
+            <span className="header-item-icon header-item-avatar">
               {(user.username || user.name)?.charAt(0)}
             </span>
-            <span className="text">
+            <span className="header-item-text">
               {user.username || user.name} ({user.score})
             </span>
+          </Link>
+
+          <a href="#user" className="header-item">
+            <HashtagIcon className="header-item-icon" />
+            <span className="header-item-text">Play</span>
           </a>
-          <a href="#user" className="item">
-            <HashtagIcon className="icon" />
-            <span className="text">Play</span>
-          </a>
-          <a href="#user" className="item right">
-            <BookOpenIcon className="icon" />
-            <span className="text">Games</span>
+          <a href="#user" className="header-item header-item-right">
+            <BookOpenIcon className="header-item-icon" />
+            <span className="header-item-text">Games</span>
           </a>
         </>
       ) : (
         <>
-          <Link to="/signIn" className="item left">
-            <UserIcon className="icon" />
-            <span className="text">Sign In</span>
+          <Link to="/signIn" className="header-item header-item-left">
+            <UserIcon className="header-item-icon" />
+            <span className="header-item-text">Sign In</span>
           </Link>
-          <Link to="/signUp" className="item right">
-            <UserAddIcon className="icon" />
-            <span className="text">Sign Up</span>
+          <Link to="/signUp" className="header-item header-item-right">
+            <UserAddIcon className="header-item-icon" />
+            <span className="header-item-text">Sign Up</span>
           </Link>
         </>
       )}

@@ -1,0 +1,26 @@
+.main-account {
+  display: flex;
+}
+
+.main-account-avatar {
+  height: 80px;
+  width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffffa6;
+  font-size: 46px;
+  font-weight: 600;
+  background-color: #312e2b;
+  border-radius: 20px;
+}
+
+.main-account-info {
+  margin-left: 15px;
+}
+
+.main-account-info-name {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+}
