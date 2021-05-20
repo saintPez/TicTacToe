@@ -109,7 +109,7 @@ const deleteUserId = async (req, res, next) => {
   try {
     const account = await User.findOne({ _id: req.user._id })
     if (
-      req.user.admin &&
+      !req.user.admin ||
       !(await bcrypt.compare(req.body.password, account?.password))
     )
       return next(createError(403, 'Access denied', { expose: true }))

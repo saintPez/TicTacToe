@@ -1,4 +1,4 @@
-header {
+.header {
   background-color: #272522;
   width: 768px;
   height: 46px;
@@ -9,7 +9,7 @@ header {
   justify-content: space-around;
 }
 
-.item {
+.header-item {
   padding: 8px 16px;
   height: 46px;
   color: #ffffffa6;
@@ -21,24 +21,24 @@ header {
   width: 100%;
 }
 
-.item:hover {
+.header-item:hover {
   background-color: #1f1e1b;
   color: #fff;
 }
 
-.left {
+.header-item-left {
   border-radius: 2em 0 0 2em;
 }
 
-.right {
+.header-item-right {
   border-radius: 0 2em 2em 0;
 }
 
-.avatar {
+.header-item-avatar {
   background-color: #312e2b;
 }
 
-.icon {
+.header-item-icon {
   min-width: 24px;
   min-height: 24px;
   max-width: 24px;
@@ -50,20 +50,20 @@ header {
 }
 
 @media (max-width: 768px) {
-  header {
+  .header {
     width: 100vw;
     border-radius: 0;
   }
-  .left {
+  .header-item-left {
     border-radius: 0;
   }
-  .right {
+  .header-item-right {
     border-radius: 0;
   }
-  .icon {
+  .header-item-icon {
     margin-right: 0;
   }
-  .text {
+  .header-item-text {
     display: none;
   }
 }
