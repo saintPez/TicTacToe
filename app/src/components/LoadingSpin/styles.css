@@ -1,0 +1,19 @@
+.loadingIcon {
+  height: 40px;
+  width: 40px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .loadingIcon {
+    animation: loading-spin infinite 1s linear;
+  }
+}
+
+@keyframes loading-spin {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
