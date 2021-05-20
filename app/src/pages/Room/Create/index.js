@@ -1,12 +1,10 @@
 import socket from 'socket.io-client'
 import { useEffect, useState } from 'react'
 import './styles.css'
-import { useSelector } from 'react-redux'
 
-const io = socket('http://localhost:3000')
+const io = socket('http://localhost:3001')
 
-function Room() {
-  const room = useSelector((state) => state.room)
+function CreateRoom() {
   const [localRooms, setLocalRooms] = useState([])
   const [data, setData] = useState({
     roomName: '',
@@ -21,7 +19,22 @@ function Room() {
   const handleCreateRoom = (e) => {
     e.preventDefault()
 
-    if (!data.roomName) io.emit('new-room', data.roomName)
+    if (!data.roomName) {
+      alert('Debe ingresar el nombre de sala')
+    } else {
+      io.emit('new-room', {
+        name: data.roomName,
+        users: 0,
+      })
+
+      handleReset()
+    }
+  }
+
+  const handleReset = () => {
+    let e = document.querySelector('input[name=roomName]')
+
+    e.value = ''
   }
 
   const handleInputChange = (e) => {
@@ -45,8 +58,16 @@ function Room() {
           Crear sala
         </button>
       </form>
+
+      <ul className="list-rooms">
+        {Object.keys(localRooms).map((singleRoom) => (
+          <li className="room-section" key={singleRoom}>
+            {singleRoom}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
 
-export default Room
+export default CreateRoom

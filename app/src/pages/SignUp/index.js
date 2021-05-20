@@ -12,7 +12,7 @@ import validate from '../../utils/validate'
 
 import './styles.css'
 
-const socket = io('http://localhost:3000')
+const socket = io('http://localhost:3001')
 
 const nameSchema = Joi.object({
   name: Joi.string().min(3).required(),
@@ -29,6 +29,12 @@ const passwordSchema = Joi.object({
 })
 
 function SignUp() {
+  const newListen = () => {
+    socket.on('listen-new', (data) => {
+      console.log(data)
+    })
+  }
+
   const [, setCookie] = useCookies([])
   const user = useSelector((state) => state.user)
   const history = useHistory()

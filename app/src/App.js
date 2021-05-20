@@ -10,7 +10,8 @@ import Header from './components/Header'
 import Home from './pages/Home/'
 import SignIn from './pages/SignIn/'
 import SignUp from './pages/SignUp/'
-import Room from './pages/Room/'
+import Rooms from './pages/Rooms/'
+import CreateRoom from './pages/Room/Create/'
 
 function App() {
   return (
@@ -27,8 +28,11 @@ function App() {
         <Route path="/signUp">
           <SignUp />
         </Route>
-        <Route path="/room">
-          <Room />
+        <Route path="/room/create">
+          <CreateRoom />
+        </Route>
+        <Route path="/rooms">
+          <Rooms />
         </Route>
       </Switch>
     </Router>

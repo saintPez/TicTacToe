@@ -1,13 +1,10 @@
-import io from 'socket.io-client'
-
-const socket = io('http://localhost:3000')
+import { React } from 'react'
+import RoomsComponent from '../../components/Rooms'
 
 function Rooms() {
   return (
     <div className="Rooms">
-      <ul>
-        <li></li>
-      </ul>
+      <RoomsComponent />
     </div>
   )
 }

@@ -61,3 +61,31 @@ p.single-room-user {
   display: flex;
   box-sizing: border-box;
 }
+
+.list-rooms {
+  position: relative;
+  width: 500px;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+  background-color: #666;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.room-section {
+  position: relative;
+  width: 100%;
+  height: auto;
+  padding: 10px;
+  cursor: pointer;
+  list-style-type: none;
+  list-style: none;
+  border-radius: 10px;
+  transition: 1s all;
+}
+
+.room-section:hover {
+  background-color: #888;
+}

@@ -5,7 +5,7 @@ import { io } from 'socket.io-client'
 
 import './styles.css'
 
-const socket = io('http://localhost:3000')
+const socket = io('http://localhost:3001')
 
 function Chat() {
   const user = useSelector((state) => state.user)
