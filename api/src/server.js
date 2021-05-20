@@ -35,7 +35,12 @@ let queue = []
 let socketIds = {}
 let rooms = {}
 
-const io = new Server(server)
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+})
 
 io.on('connection', (socket) => {
   console.log('New connection')
@@ -50,10 +55,21 @@ io.on('connection', (socket) => {
   })
 
   socket.on('new-room', (room) => {
-    rooms[room] = {}
+    if (rooms[room.name]) {
+      socket.join(room.name)
+    } else {
+      socket.join(room.name)
+      rooms[room.name] = {}
+      rooms[room.name].name = room.name
+      rooms[room.name].users = room.users
+    }
 
-    console.log(rooms)
+    socket.emit('new-room-created', rooms)
+
+    socket.broadcast.emit('get-list-rooms', rooms)
   })
+
+  socket.emit('get-list-rooms', rooms)
 
   socket.on('check-in', (user) => {
     socketIds[user] = socket.id
