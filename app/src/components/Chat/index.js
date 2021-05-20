@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import { io } from 'socket.io-client'
@@ -8,8 +8,16 @@ import './styles.css'
 const socket = io('http://localhost:3001')
 
 function Chat() {
+  const chatRef = useRef()
   const user = useSelector((state) => state.user)
   const [data, setData] = useState({ messages: [], message: '' })
+
+  useEffect(() => {
+    chatRef.current.scrollTo(
+      0,
+      chatRef.current.scrollHeight - chatRef.current.clientHeight
+    )
+  }, [data])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -27,25 +35,24 @@ function Chat() {
   }
 
   socket.on('chat-global', ({ message, user }) => {
-    console.log('se')
     setData({ ...data, messages: [...data.messages, { message, user }] })
   })
 
   return (
     <>
-      <div className="home-item home-chat">
+      <div className="main-item main-chat">
         <h1>Chat</h1>
-        <ol className="home-chat-messages">
+        <ol ref={chatRef} className="main-chat-messages">
           {data.messages.map((message, index) => (
-            <li key={index} className="chat">
+            <li key={index} className="main-chat-message">
               <div className={message.me ? 'me' : 'you'}>
-                <div className="chat-title">{message.user}</div>
-                <div className="chat-message">{message.message}</div>
+                <div className="main-chat-message-title">{message.user}</div>
+                <div>{message.message}</div>
               </div>
             </li>
           ))}
         </ol>
-        <form className="home-chat-form" onSubmit={handleSubmit}>
+        <form className="main-chat-form" onSubmit={handleSubmit}>
           <input
             onChange={(e) => {
               setData({ ...data, message: e.target.value })
@@ -53,7 +60,7 @@ function Chat() {
             type="text"
             value={data.message}
           />
-          <button className="home-chat-send">{'>'}</button>
+          <button className="main-chat-send">{'>'}</button>
         </form>
       </div>
     </>

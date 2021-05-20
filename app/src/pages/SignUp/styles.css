@@ -41,7 +41,7 @@ input:focus {
 .input {
   display: flex;
   flex-direction: column;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   position: relative;
   width: 100%;
 }
@@ -74,13 +74,14 @@ label.error {
   color: #000;
 }
 
-.button:hover {
+.button:hover,
+.button:focus {
   background-color: #fff;
 }
 
 h1 {
   color: #ffffffa6;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
 @media (max-width: 425px) {

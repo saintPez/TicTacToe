@@ -1,0 +1,11 @@
+.main-tictactoe {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-tictactoe-icon {
+  height: 30px;
+  width: 30px;
+  margin-right: 15px;
+}

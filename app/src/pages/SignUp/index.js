@@ -29,11 +29,9 @@ const passwordSchema = Joi.object({
 })
 
 function SignUp() {
-  const newListen = () => {
-    socket.on('listen-new', (data) => {
-      console.log(data)
-    })
-  }
+  socket.on('listen-new', (data) => {
+    console.log(data)
+  })
 
   const [, setCookie] = useCookies([])
   const user = useSelector((state) => state.user)

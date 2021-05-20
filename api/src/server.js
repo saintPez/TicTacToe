@@ -43,8 +43,6 @@ const io = new Server(server, {
 })
 
 io.on('connection', (socket) => {
-  console.log('New connection')
-
   socket.on('new-user', (userId) => {
     socket.user = userId
     users.push({ id: socket.id, user: userId })
