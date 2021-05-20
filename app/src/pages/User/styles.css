@@ -1,0 +1,87 @@
+.user-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-item-user {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 25px;
+  background-color: #272522;
+  border-radius: 2em;
+  padding: 32px;
+}
+
+.user-header {
+  margin-right: 24px;
+}
+
+.user-header-avatar {
+  height: 160px;
+  width: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffffa6;
+  font-size: 90px;
+  font-weight: 600;
+  background-color: #312e2b;
+  border-radius: 20px;
+}
+
+.user-body {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+
+  width: 100%;
+}
+
+.user-body-username {
+  margin: 0 !important;
+}
+
+.user-body-name {
+  font-size: 15px;
+  color: #ffffffa6;
+}
+
+.user-body-email {
+  margin: 2px 0;
+  font-size: 15px;
+  color: #ffffff;
+}
+
+.user-body-info {
+  display: grid;
+  grid-column-gap: 0.5rem;
+  grid-row-gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.user-body-info-item {
+  padding: 10px 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-body-info-item-icon {
+  height: 30px;
+  width: 30px;
+  margin-bottom: 10px;
+}
+
+.user-body-info-item-data {
+  font-weight: 700;
+  font-size: 13px;
+}
