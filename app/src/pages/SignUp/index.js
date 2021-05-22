@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import { useDispatch, useSelector } from 'react-redux'
-import { io } from 'socket.io-client'
 
 import Joi from 'joi'
 
@@ -11,8 +10,6 @@ import instance from '../../axios'
 import validate from '../../utils/validate'
 
 import './styles.css'
-
-const socket = io('http://localhost:3001')
 
 const nameSchema = Joi.object({
   name: Joi.string().min(3).required(),
@@ -29,10 +26,6 @@ const passwordSchema = Joi.object({
 })
 
 function SignUp() {
-  socket.on('listen-new', (data) => {
-    console.log(data)
-  })
-
   const [, setCookie] = useCookies([])
   const user = useSelector((state) => state.user)
   const history = useHistory()
@@ -67,7 +60,6 @@ function SignUp() {
             path: '/',
             expires: new Date(now.getTime() + response.data.expires_in * 1000),
           })
-          socket.emit('new-user', response.data.access_token)
           setCookie('refresh_token', response.data.refresh_token, {
             path: '/',
             expires: new Date(

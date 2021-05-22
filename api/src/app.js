@@ -7,6 +7,7 @@ const createError = require('http-errors')
 const authRoutes = require('./routes/auth')
 const userRoutes = require('./routes/user')
 const gameRoutes = require('./routes/game')
+const socketRoutes = require('./routes/socket')
 
 // App
 
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/game', gameRoutes)
+app.use('/api/socket', socketRoutes)
 
 // Errors
 

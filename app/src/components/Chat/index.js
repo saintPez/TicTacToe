@@ -1,11 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import { io } from 'socket.io-client'
+import socket from '../../socket'
 
 import './styles.css'
-
-const socket = io('http://localhost:3001')
 
 function Chat() {
   const chatRef = useRef()
@@ -23,7 +21,6 @@ function Chat() {
     e.preventDefault()
     socket.emit('chat-global', {
       message: data.message,
-      user: user.username || user.name,
     })
     setData({
       messages: [

@@ -10,3 +10,5 @@
 **/*.http
 
 **/build
+
+**/db.json

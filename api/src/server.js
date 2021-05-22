@@ -3,39 +3,32 @@ config()
 
 const app = require('./app')
 
-const { Server } = require('socket.io')
-
 const { PORT } = require('./env')
 
 //const bcrypt = require('bcrypt')
 
-const axios = require('axios')
-
 // const generateIntervalObject = require('./utils/utils')
 
 require('./database')
+const { connection, lowdb } = require('./lowdb')
 
+connection()
 const server = app.listen(PORT, async () => {
   console.log(`Info: Server running on port ${PORT}`)
 })
 
 //Vars settings
 
-const updateInterval = parseInt(process.env.UPDATE_INTERVAL)
-const minRoomSize = parseInt(process.env.MIN_ROOM_SIZE)
+// const updateInterval = parseInt(process.env.UPDATE_INTERVAL)
+// const minRoomSize = parseInt(process.env.MIN_ROOM_SIZE)
 //const maxRank = parseInt(process.env.MAX_RANK)
 //const rankInterval = parseInt(process.env.RANK_INTERVAL)
 //const rankChecks = generateIntervalObject(maxRank, rankInterval)
-const gameServer = process.env.GAME_SERVER_URI
+// const gameServer = process.env.GAME_SERVER_URI
 
 // Sockets
 
-let users = []
-let queue = []
-let socketIds = {}
-let rooms = {}
-
-const io = new Server(server, {
+const io = require('socket.io')(server, {
   cors: {
     origin: 'http://localhost:3000',
     methods: ['GET', 'POST'],
@@ -43,33 +36,95 @@ const io = new Server(server, {
 })
 
 io.on('connection', (socket) => {
-  socket.on('new-user', (userId) => {
-    socket.user = userId
-    users.push({ id: socket.id, user: userId })
+  socket.on('signIn', ({ id, name }) => {
+    socket.user = { id, name }
+    const user = lowdb()
+      .get('users')
+      .find({ id: `${id}` })
+      .value()
+    if (user) {
+      lowdb()
+        .get('users')
+        .find({ id: `${id}` })
+        .assign({
+          id,
+          name,
+          socket: socket.id,
+        })
+        .write()
+    } else lowdb().get('users').push({ id, name, socket: socket.id }).write()
   })
 
-  socket.on('chat-global', ({ message, user }) => {
-    socket.broadcast.emit('chat-global', { message, user })
+  socket.on('chat-global', ({ message }) => {
+    socket.broadcast.emit('chat-global', { message, user: socket.user?.name })
   })
 
-  socket.on('new-room', (room) => {
-    if (rooms[room.name]) {
-      socket.join(room.name)
-    } else {
-      socket.join(room.name)
-      rooms[room.name] = {}
-      rooms[room.name].name = room.name
-      rooms[room.name].users = room.users
-    }
+  // socket.on('new-room', (room) => {
+  //   const rooms = getRooms()
+  //   if (!socket.user) return
+  //   if (rooms[room.id]) {
+  //     socket.join(room.id)
+  //     rooms[room.id].users[socket.user.id] = {
+  //       name: socket.user.name,
+  //       socket: socket.id,
+  //     }
+  //     socket.room = room.id
+  //   } else {
+  //     const uuid = uuidv4()
+  //     socket.join(uuid)
+  //     rooms[uuid] = {}
+  //     rooms[uuid].config = room.config
+  //     rooms[uuid].users[socket.user.id] = {
+  //       name: socket.user.name,
+  //       socket: socket.id,
+  //     }
+  //     socket.room = uuid
+  //   }
 
-    socket.emit('new-room-created', rooms)
+  //   io.in(socket.room).emit('room', {
+  //     id: socket.room,
+  //     config: rooms[socket.room].config,
+  //     users: rooms[socket.room].users,
+  //   })
 
-    socket.broadcast.emit('get-list-rooms', rooms)
+  //   setRooms(rooms)
+
+  //   socket.broadcast.emit('get-list-rooms', rooms)
+  // })
+
+  socket.emit('join', (roomId) => {
+    const room = lowdb()
+      .get('rooms')
+      .find({ id: `${roomId}` })
+      .value()
+
+    if (!socket.user || !room) return
+
+    socket.join(roomId)
+    const users = lowdb()
+      .get('rooms')
+      .find({ id: `${roomId}` })
+      .get('users')
+      .value()
+    users.push({
+      id: socket.user.id,
+      name: socket.user.name,
+      socket: socket.id,
+    })
+    lowdb()
+      .get('rooms')
+      .find({ id: `${roomId}` })
+      .assign({ users })
+      .write()
+
+    io.in(socket.room).emit('room', {
+      id: socket.room,
+      config: room.config,
+      users: users,
+    })
   })
 
-  socket.emit('get-list-rooms', rooms)
-
-  socket.on('check-in', (user) => {
+  /*socket.on('check-in', (user) => {
     socketIds[user] = socket.id
   })
 
@@ -110,15 +165,16 @@ io.on('connection', (socket) => {
           errorMatchActions(roomId, _, currentRoom, 'GameServerError')
         })
     }
-  })
+  })*/
 
   socket.on('disconnect', () => {
-    removeUserFromUsers(socket.user)
-    removeUserFromQueue(socket.user)
+    lowdb().get('users').remove({ id: socket.user?.id }).write()
+
+    lowdb().get('queue').remove({ id: socket.user?.id }).write()
   })
 })
 
-setInterval(() => {
+/*setInterval(() => {
   // rankChecks.forEach(singleRange => {
   //   checkIfMatch(singleRange.min, singleRange.max)
   // })
@@ -148,13 +204,13 @@ const checkIfMatch = (min, max) => {
 
 const sendUniqueResponse = (id, emitId, message) => {
   io.sockets.to(id).emit(emitId, message)
-}
+}*/
 
 /* const joinUniqueClient = (id, roomName) => {
   io.sockets.to(id).join(roomName)
 } */
 
-const findRoomId = (userId) => {
+/*const findRoomId = (userId) => {
   const roomsValues = Object.values(rooms)
   const singleLevelValues = roomsValues.map((singleRoomValue) =>
     singleRoomValue.map((singleObjectInsideRoom) => singleObjectInsideRoom.id)
@@ -172,20 +228,6 @@ const findUserIndexInRoom = (userId, roomId) => {
   )
 
   return userIndex
-}
-
-const removeUserFromUsers = (socketId) => {
-  users.splice(
-    users.findIndex((user) => user.id === socketId),
-    1
-  )
-}
-
-const removeUserFromQueue = (socketId) => {
-  queue.splice(
-    queue.findIndex((user) => user.id === socketId),
-    1
-  )
 }
 
 const errorMatchActions = (roomId, user, currentRoom, rejectionType) => {
@@ -217,8 +259,8 @@ const errorMatchActions = (roomId, user, currentRoom, rejectionType) => {
   delete rooms[roomId]
 }
 
-const createNewRoom = async (users) => {
-  return await axios.post(`${gameServer}/room`, {
-    users: users,
-  })
-}
+const createNewRoom = async () => {
+  // return await axios.post(`${gameServer}/room`, {
+  //   users: users,
+  // })
+}*/

@@ -23,7 +23,6 @@ function User() {
       .then((response) => {
         setUser({ ...response.data.user })
         setIsLoading(false)
-        console.log({ ...user })
       })
       .catch((error) => {
         history.push('/')
@@ -34,7 +33,7 @@ function User() {
   return (
     <>
       {isLoading ? (
-        <div className="main-item user-loading">
+        <div className="main-item loading">
           <LoadingSpin />
         </div>
       ) : (
@@ -66,14 +65,21 @@ function User() {
                   <HeartIcon className="user-body-info-item-icon" />
                   <div className="user-body-info-item-data">{user.score}</div>
                 </div>
-                <div className="user-body-info-item">
+                <div className="user-body-info-item user-body-info-item-third">
                   <HashtagIcon className="user-body-info-item-icon" />
                   <div className="user-body-info-item-data">{user.score}</div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="main-item">PARTIDAS</div>
+          <div className="main-item-user-menu user-menu">
+            <a href="#user" className="user-menu-item user-menu-item-left">
+              Notes
+            </a>
+            <a href="#user" className="user-menu-item user-menu-item-right">
+              Games
+            </a>
+          </div>
         </>
       )}
     </>

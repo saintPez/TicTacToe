@@ -12,6 +12,7 @@ import SignIn from './pages/SignIn/'
 import SignUp from './pages/SignUp/'
 import ForgotPassword from './pages/ForgotPassword/'
 import User from './pages/User/'
+import Play from './pages/Play/'
 import Rooms from './pages/Rooms/'
 import CreateRoom from './pages/Room/Create/'
 
@@ -34,30 +35,43 @@ function App() {
         <Route path="/forgot-password">
           <ForgotPassword />
         </Route>
+        <Route path="/play">
+          <main className="main">
+            <div className="main-column-left">
+              <TicTacToe />
+            </div>
+            <div className="main-column-center-right">
+              <Play />
+            </div>
+          </main>
+        </Route>
 
         <Route>
           <main className="main">
             <div className="main-column-left">
               <TicTacToe />
             </div>
-            <div className="main-column-center">
-              <Route path="/home">
-                <Home />
-              </Route>
-              <Route path="/user/:id">
-                <User />
-              </Route>
-              <Route path="/room/create">
-                <CreateRoom />
-              </Route>
-              <Route path="/rooms">
-                <Rooms />
-              </Route>
-            </div>
-            <div className="main-column-right">
-              <Account />
-              <Chat />
-            </div>
+
+            <Route>
+              <div className="main-column-center">
+                <Route path="/home">
+                  <Home />
+                </Route>
+                <Route path="/user/:id">
+                  <User />
+                </Route>
+                <Route path="/room/create">
+                  <CreateRoom />
+                </Route>
+                <Route path="/rooms">
+                  <Rooms />
+                </Route>
+              </div>
+              <div className="main-column-right">
+                <Account />
+                <Chat />
+              </div>
+            </Route>
           </main>
         </Route>
       </Switch>

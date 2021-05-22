@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import { useDispatch, useSelector } from 'react-redux'
 
+import socket from '../../socket'
+
 import { setUser, updateUser, resetUser } from '../../actions/user.actions'
 import instance from '../../axios'
 
@@ -24,6 +26,10 @@ function Header() {
       instance
         .get('/user')
         .then((response) => {
+          socket.emit('signIn', {
+            id: response.data.user._id,
+            name: response.data.user.username || response.data.user.name,
+          })
           dispatch(
             setUser({
               ...response.data.user,
@@ -85,10 +91,10 @@ function Header() {
             </span>
           </Link>
 
-          <a href="#user" className="header-item">
+          <Link to={`/play`} className="header-item">
             <HashtagIcon className="header-item-icon" />
             <span className="header-item-text">Play</span>
-          </a>
+          </Link>
           <a href="#user" className="header-item header-item-right">
             <BookOpenIcon className="header-item-icon" />
             <span className="header-item-text">Games</span>
