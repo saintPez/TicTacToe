@@ -35,7 +35,7 @@ function App() {
         <Route path="/forgot-password">
           <ForgotPassword />
         </Route>
-        <Route path="/play">
+        {/* <Route path="/play">
           <main className="main">
             <div className="main-column-left">
               <TicTacToe />
@@ -44,7 +44,7 @@ function App() {
               <Play />
             </div>
           </main>
-        </Route>
+        </Route> */}
 
         <Route>
           <main className="main">
@@ -65,6 +65,9 @@ function App() {
                 </Route>
                 <Route path="/rooms">
                   <Rooms />
+                </Route>
+                <Route path="/play">
+                  <Play />
                 </Route>
               </div>
               <div className="main-column-right">
