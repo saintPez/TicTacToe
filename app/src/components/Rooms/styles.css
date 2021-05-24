@@ -1,11 +1,8 @@
-.list-rooms {
-  position: relative;
-  width: 500px;
-  height: auto;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  background-color: #777;
-  margin-left: auto;
-  margin-right: auto;
+.rooms {
+  overflow-x: auto;
+}
+
+.rooms-table {
+  width: 100%;
+  border-collapse: collapse;
 }

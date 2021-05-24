@@ -1,12 +1,9 @@
 import { React } from 'react'
+
 import RoomsComponent from '../../components/Rooms'
 
 function Rooms() {
-  return (
-    <div className="Rooms">
-      <RoomsComponent />
-    </div>
-  )
+  return <RoomsComponent />
 }
 
 export default Rooms
