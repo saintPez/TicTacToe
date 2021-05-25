@@ -4,6 +4,7 @@ import { useHistory, Link } from 'react-router-dom'
 import LoadingSpin from '../../components/LoadingSpin'
 
 import instance from '../../axios'
+import socket from '../../socket'
 
 import { GlobeAltIcon } from '@heroicons/react/outline'
 import { UsersIcon } from '@heroicons/react/outline'
@@ -19,7 +20,7 @@ function Play() {
 
   useEffect(() => {
     instance
-      .get('/socket/', {
+      .get(`/socket/?socket=${socket.id}`, {
         config: { test: 'hola' },
       })
       .then((response) => {

@@ -15,14 +15,14 @@ function RoomsComponent() {
 
   useEffect(() => {
     instance
-      .get('/socket/')
+      .get(`/socket/?socket=${socket.id}`)
       .then((response) => {
         setRooms(response.data.rooms)
-        setIsLoading(false)
       })
       .catch((error) => {
-        history.push('/')
+        console.log(error)
       })
+      .then(() => setIsLoading(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -35,30 +35,6 @@ function RoomsComponent() {
       ) : (
         <div className="main-item">
           <div className="rooms">
-            <div className="rooms-create">
-              <button
-                onClick={() => {
-                  instance
-                    .post('/socket/', {
-                      config: {
-                        width: 3,
-                        height: 3,
-                        consecutive: 3,
-                        inverted: false,
-                        password: null,
-                      },
-                    })
-                    .then((response) => {
-                      socket.emit('join', response.data.room.id)
-                    })
-                    .catch((error) => {
-                      history.push('/')
-                    })
-                }}
-              >
-                Create
-              </button>
-            </div>
             <table className="rooms-table">
               <thead>
                 <tr>
@@ -70,27 +46,35 @@ function RoomsComponent() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1/2</td>
-                  <td>3x3</td>
-                  <td>3</td>
-                  <td>true</td>
-                  <td>true</td>
-                </tr>
-                <tr>
-                  <td>1/4</td>
-                  <td>10x10</td>
-                  <td>5</td>
-                  <td>false</td>
-                  <td>false</td>
-                </tr>
-                <tr>
-                  <td>3/4</td>
-                  <td>10x10</td>
-                  <td>5</td>
-                  <td>false</td>
-                  <td>true</td>
-                </tr>
+                {rooms.map((room) => (
+                  <tr key={room.id}>
+                    <td>
+                      <Link to={`room/${room.id}`}>
+                        {room.users.length}/{room.config.players}
+                      </Link>
+                    </td>
+                    <td>
+                      <Link to={`room/${room.id}`}>
+                        {room.config.width}x{room.config.height}
+                      </Link>
+                    </td>
+                    <td>
+                      <Link to={`room/${room.id}`}>
+                        {room.config.consecutive}
+                      </Link>
+                    </td>
+                    <td>
+                      <Link
+                        to={`room/${room.id}`}
+                      >{`${room.config.inverted}`}</Link>
+                    </td>
+                    <td>
+                      <Link to={`room/${room.id}`}>
+                        {`${room.config.password == null}`}
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

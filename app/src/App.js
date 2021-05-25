@@ -14,6 +14,7 @@ import ForgotPassword from './pages/ForgotPassword/'
 import User from './pages/User/'
 import Play from './pages/Play/'
 import Rooms from './pages/Rooms/'
+import Room from './pages/Room/'
 import CreateRoom from './pages/Room/Create/'
 
 import TicTacToe from './components/TicTacToe'
@@ -60,14 +61,17 @@ function App() {
                 <Route path="/user/:id">
                   <User />
                 </Route>
+                <Route path="/play">
+                  <Play />
+                </Route>
                 <Route path="/room/create">
                   <CreateRoom />
                 </Route>
                 <Route path="/rooms">
                   <Rooms />
                 </Route>
-                <Route path="/play">
-                  <Play />
+                <Route path="/room/:id">
+                  <Room />
                 </Route>
               </div>
               <div className="main-column-right">

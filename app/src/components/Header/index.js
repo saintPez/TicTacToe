@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import { useDispatch, useSelector } from 'react-redux'
 
-import socket from '../../socket'
-
 import { setUser, updateUser, resetUser } from '../../actions/user.actions'
+
 import instance from '../../axios'
+import socket from '../../socket'
 
 import { HashtagIcon } from '@heroicons/react/solid'
 import { BookOpenIcon, UserIcon, UserAddIcon } from '@heroicons/react/outline'
@@ -30,13 +30,16 @@ function Header() {
             id: response.data.user._id,
             name: response.data.user.username || response.data.user.name,
           })
-          dispatch(
-            setUser({
-              ...response.data.user,
-              access_token: cookies.Authorization,
-              refresh_token: cookies.refresh_token,
-            })
-          )
+          socket.once('signIn', (socketResponse) => {
+            dispatch(
+              setUser({
+                ...response.data.user,
+                socket: socketResponse.success,
+                access_token: cookies.Authorization,
+                refresh_token: cookies.refresh_token,
+              })
+            )
+          })
         })
         .catch((error) => {
           removeCookie('Authorization')

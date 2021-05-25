@@ -7,7 +7,7 @@ const isSigned = async (req, res, next) => {
   try {
     const user = await lowdb()
       .get('users')
-      .find({ id: `${req.user._id}` })
+      .find({ id: `${req.user._id}`, socket: `${req.query.socket}` })
       .value()
 
     if (!user)
