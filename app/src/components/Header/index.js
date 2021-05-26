@@ -35,6 +35,7 @@ function Header() {
               setUser({
                 ...response.data.user,
                 socket: socketResponse.success,
+                socketId: socket.id,
                 access_token: cookies.Authorization,
                 refresh_token: cookies.refresh_token,
               })

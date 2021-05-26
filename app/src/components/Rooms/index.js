@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useHistory, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import LoadingSpin from '../../components/LoadingSpin'
 
@@ -9,7 +9,6 @@ import socket from '../../socket'
 import './styles.css'
 
 function RoomsComponent() {
-  const history = useHistory()
   const [isLoading, setIsLoading] = useState(true)
   const [rooms, setRooms] = useState([])
 
