@@ -28,7 +28,12 @@ const server = app.listen(PORT, async () => {
 
 // Sockets
 
-const io = require('socket.io')(server, {})
+const io = require('socket.io')(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+})
 
 io.on('connection', (socket) => {
   socket.on('signIn', async ({ id, name }) => {
