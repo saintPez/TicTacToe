@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 
 const cors = require('cors')
@@ -20,22 +21,26 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cors())
 app.use(helmet())
 
-// Routes
+// Statics
 
-app.get('/', (req, res) => {
-  res.json({})
-})
+app.use(express.static(path.join(__dirname, '..', '..', 'app', 'build')))
+
+// Routes
 
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/game', gameRoutes)
 app.use('/api/socket', socketRoutes)
 
-// Errors
-
-app.use((req, res, next) => {
+app.use('/api/*', (req, res, next) => {
   next(createError(404, 'Not found', { expose: true }))
 })
+
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, '..', '..', 'app', 'build', 'index.html'))
+})
+
+// Errors
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({

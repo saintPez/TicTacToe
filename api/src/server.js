@@ -106,7 +106,12 @@ io.on('connection', (socket) => {
         })
         .value()
 
-      if (!socket.user || !room || userInRoom)
+      if (
+        !socket.user ||
+        !room ||
+        userInRoom ||
+        room.config.players === room.users.length
+      )
         return socket.emit('join', { success: false })
 
       socket.join(roomId)
@@ -146,6 +151,150 @@ io.on('connection', (socket) => {
     } catch (error) {
       console.log(error)
     }
+  })
+
+  socket.on('leave', async () => {
+    for (let i = 0; i < socket.rooms.length; i++) {
+      if (socket.rooms[i] !== socket.id) socket.leave(socket.rooms[i])
+    }
+    await leaveRoom(socket)
+
+    socket.emit('leave', { success: true })
+  })
+
+  socket.on('ready', async () => {
+    const room = await lowdb()
+      .get('rooms')
+      .find((room) => {
+        if (room.users.find((user) => user.id == `${socket.user?.id}`))
+          return true
+      })
+      .value()
+    if (!room) return socket.emit('ready', { success: false })
+
+    let users = room.users
+
+    const index = users.findIndex((user) => user.id == `${socket.user?.id}`)
+
+    users[index].ready = !users[index].ready
+
+    if (
+      users.filter((user) => user.ready === true).length === room.config.players
+    ) {
+      await lowdb()
+        .get('rooms')
+        .find({ id: `${room.id}` })
+        .assign({ playing: true, users })
+        .write()
+
+      socket.emit('ready', {
+        success: true,
+        room: {
+          id: room.id,
+          config: room.config,
+          users,
+          playing: true,
+        },
+      })
+
+      return socket.to(room.id).emit('room', {
+        id: room.id,
+        config: room.config,
+        users,
+        playing: true,
+      })
+    }
+
+    await lowdb()
+      .get('rooms')
+      .find({ id: `${room.id}` })
+      .assign({ users })
+      .write()
+
+    socket.emit('ready', {
+      success: true,
+      room: {
+        id: room.id,
+        config: room.config,
+        users,
+      },
+    })
+
+    socket.to(room.id).emit('room', {
+      id: room.id,
+      config: room.config,
+      users,
+    })
+  })
+
+  socket.on('game-ready', async () => {
+    const room = await lowdb()
+      .get('rooms')
+      .find((room) => {
+        if (
+          room.users.find((user) => user.id == `${socket.user?.id}`) &&
+          room.playing
+        )
+          return true
+      })
+      .value()
+
+    if (!room) return socket.emit('game-ready', { success: false })
+
+    let users = room.users
+
+    const history = room.history || []
+
+    const index = users.findIndex((user) => user.id == `${socket.user?.id}`)
+
+    if (users[index].playing)
+      return socket.emit('game-ready', { success: false })
+
+    users[index].playing = true
+
+    await lowdb()
+      .get('rooms')
+      .find({ id: `${room.id}` })
+      .assign({ users })
+      .write()
+
+    socket.emit('game-ready', {
+      success: true,
+      game: { id: room.id, history, users, playing: true },
+    })
+
+    socket.to(room.id).emit('game', {
+      id: room.id,
+      history,
+      users,
+      playing: true,
+    })
+  })
+
+  socket.on('game', async () => {
+    const room = await lowdb()
+      .get('rooms')
+      .find((room) => {
+        if (
+          room.users.find((user) => user.id == `${socket.user?.id}`) &&
+          room.playing
+        )
+          return true
+      })
+      .value()
+
+    if (!room) return socket.emit('game', { success: false })
+
+    if (
+      room.users.filter((user) => user.playing === true).length !==
+      room.config.players
+    )
+      return
+
+    socket.emit('game', {
+      success: true,
+      game: { history: room.history, users: room.users, playing: true },
+    })
   })
 
   /*socket.on('check-in', (user) => {
@@ -199,25 +348,7 @@ io.on('connection', (socket) => {
 
       // Rooms
 
-      const room = await lowdb()
-        .get('rooms')
-        .find((room) => {
-          if (room.users.find((user) => user.id == `${socket.user?.id}`))
-            return true
-        })
-        .value()
-
-      if (room) {
-        if (room.users.length == 1) {
-          await lowdb().get('rooms').remove({ id: room.id }).write()
-        } else {
-          const index = room.users.findIndex(
-            (_user) => _user == `${socket.user?.id}`
-          )
-          room.users.splice(index, 1)
-          await lowdb().get('rooms').assign({ users: room.users })
-        }
-      }
+      await leaveRoom(socket)
 
       // Queue
 
@@ -227,6 +358,28 @@ io.on('connection', (socket) => {
     }
   })
 })
+
+const leaveRoom = async (socket) => {
+  const room = await lowdb()
+    .get('rooms')
+    .find((room) => {
+      if (room.users.find((user) => user.id == `${socket.user?.id}`))
+        return true
+    })
+    .value()
+
+  if (room) {
+    if (room.users.length == 1) {
+      await lowdb().get('rooms').remove({ id: room.id }).write()
+    } else {
+      const index = room.users.findIndex(
+        (_user) => _user == `${socket.user?.id}`
+      )
+      room.users.splice(index, 1)
+      await lowdb().get('rooms').assign({ users: room.users })
+    }
+  }
+}
 
 /*setInterval(() => {
   // rankChecks.forEach(singleRange => {
