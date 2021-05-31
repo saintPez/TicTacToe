@@ -255,12 +255,12 @@ io.on('connection', (socket) => {
     await lowdb()
       .get('rooms')
       .find({ id: `${room.id}` })
-      .assign({ users })
+      .assign({ users, history })
       .write()
 
     socket.emit('game-ready', {
       success: true,
-      game: { id: room.id, history, users, playing: true },
+      game: { id: room.id, history, users, playing: true, config: room.config },
     })
 
     socket.to(room.id).emit('game', {
@@ -268,10 +268,11 @@ io.on('connection', (socket) => {
       history,
       users,
       playing: true,
+      config: room.config,
     })
   })
 
-  socket.on('game', async () => {
+  socket.on('game', async ({ width, height }) => {
     const room = await lowdb()
       .get('rooms')
       .find((room) => {
@@ -289,11 +290,38 @@ io.on('connection', (socket) => {
       room.users.filter((user) => user.playing === true).length !==
       room.config.players
     )
-      return
+      return socket.emit('game', { success: false })
+
+    let history = room.history
+
+    if (history.find((e) => e.width === width && e.height === height))
+      return socket.emit('game', { success: false })
+
+    history.push({ width, height })
+
+    await lowdb()
+      .get('rooms')
+      .find({ id: `${room.id}` })
+      .assign({ history })
+      .write()
 
     socket.emit('game', {
       success: true,
-      game: { history: room.history, users: room.users, playing: true },
+      game: {
+        id: room.id,
+        history,
+        users: room.users,
+        playing: true,
+        config: room.config,
+      },
+    })
+
+    socket.to(room.id).emit('game', {
+      id: room.id,
+      history,
+      users: room.users,
+      playing: true,
+      config: room.config,
     })
   })
 
