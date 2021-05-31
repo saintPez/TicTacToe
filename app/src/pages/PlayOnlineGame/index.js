@@ -23,8 +23,8 @@ function PlayOnlineGame() {
 
   const handleClick = (width, height) => {
     console.log()
-    socket.emit('game', { width, height })
-    socket.once('game', (response) => {
+    socket.emit('game-set', { width, height })
+    socket.once('game-set', (response) => {
       if (response.success) setGame(response.game)
       console.log(response)
     })
@@ -48,7 +48,7 @@ function PlayOnlineGame() {
               width={game.config?.width}
               height={game.config?.height}
               handleClick={handleClick}
-              active={game.history}
+              history={game.history}
             />
           </div>
         </div>

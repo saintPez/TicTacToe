@@ -1,6 +1,6 @@
 import './styles.css'
 
-function Table({ width, height, handleClick, active }) {
+function Table({ width, height, handleClick, history }) {
   let table = []
 
   for (let i = 0; i < width; i++) {
@@ -8,15 +8,14 @@ function Table({ width, height, handleClick, active }) {
       table.push(
         <button
           key={`${i}x${a}`}
-          className={`table-item ${
-            active.find((e) => e.width === a + 1 && e.height === i + 1)
-              ? 'active'
-              : ''
-          }`}
+          className={`table-item`}
           onClick={() => {
             handleClick(a + 1, i + 1)
           }}
-        ></button>
+        >{`${
+          history.find((e) => e.width === a + 1 && e.height === i + 1)?.mark ||
+          ''
+        }`}</button>
       )
     }
   }

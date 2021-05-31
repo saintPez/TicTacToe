@@ -28,6 +28,8 @@ const server = app.listen(PORT, async () => {
 
 // Sockets
 
+const marks = ['X', 'O', 'Y', 'Z']
+
 const io = require('socket.io')(server, {
   cors: {
     origin: 'http://localhost:3000',
@@ -255,7 +257,7 @@ io.on('connection', (socket) => {
     await lowdb()
       .get('rooms')
       .find({ id: `${room.id}` })
-      .assign({ users, history })
+      .assign({ users, history, turn: 0 })
       .write()
 
     socket.emit('game-ready', {
@@ -272,7 +274,7 @@ io.on('connection', (socket) => {
     })
   })
 
-  socket.on('game', async ({ width, height }) => {
+  socket.on('game-set', async ({ width, height }) => {
     const room = await lowdb()
       .get('rooms')
       .find((room) => {
@@ -284,28 +286,35 @@ io.on('connection', (socket) => {
       })
       .value()
 
-    if (!room) return socket.emit('game', { success: false })
+    if (!room) return socket.emit('game-set', { success: false })
 
     if (
       room.users.filter((user) => user.playing === true).length !==
       room.config.players
     )
-      return socket.emit('game', { success: false })
+      return socket.emit('game-set', { success: false })
 
     let history = room.history
+    let turn = room.turn
+
+    if (`${socket.user.id}` !== `${room.users[turn].id}`)
+      return socket.emit('game-set', { success: false })
 
     if (history.find((e) => e.width === width && e.height === height))
-      return socket.emit('game', { success: false })
+      return socket.emit('game-set', { success: false })
 
-    history.push({ width, height })
+    history.push({ width, height, mark: marks[turn] })
+
+    turn++
+    if (turn >= room.users.length) turn = 0
 
     await lowdb()
       .get('rooms')
       .find({ id: `${room.id}` })
-      .assign({ history })
+      .assign({ history, turn })
       .write()
 
-    socket.emit('game', {
+    socket.emit('game-set', {
       success: true,
       game: {
         id: room.id,
