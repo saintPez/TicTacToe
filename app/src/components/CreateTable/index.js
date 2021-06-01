@@ -34,13 +34,13 @@ function CreateTable({ config, setConfig }) {
       } else {
         table.push(
           <CreateTableItem
-            key={`${i}x${a}`}
-            width={i}
-            height={a}
+            key={`${a}x${i}`}
+            width={a}
+            height={i}
             action={() => {
-              handlerClick(i, a)
+              handlerClick(a, i)
             }}
-            active={active[`${i}x${a}`] ? true : false}
+            active={active[`${a}x${i}`] ? true : false}
           />
           // <button
           //   id={`${i + 1}x${a + 1}`}

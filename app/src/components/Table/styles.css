@@ -1,7 +1,49 @@
-.table {
+.table-10 {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
-  width: 220px;
+  width: 200px;
+}
+
+.table-9 {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  width: 180px;
+}
+
+.table-8 {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  width: 160px;
+}
+
+.table-7 {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 140px;
+}
+
+.table-6 {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  width: 120px;
+}
+
+.table-5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  width: 100px;
+}
+
+.table-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: 80px;
+}
+
+.table-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 60px;
 }
 
 .table-item {

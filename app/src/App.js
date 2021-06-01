@@ -15,7 +15,6 @@ import User from './pages/User/'
 import Play from './pages/Play/'
 import Rooms from './pages/Rooms/'
 import Room from './pages/Room/'
-import CreateRoom from './pages/Room/Create/'
 import Leave from './pages/Leave'
 import PlayOnlineGame from './pages/PlayOnlineGame'
 
@@ -68,9 +67,6 @@ function App() {
                 </Route>
                 <Route path="/play/online/:id">
                   <PlayOnlineGame />
-                </Route>
-                <Route path="/room/create">
-                  <CreateRoom />
                 </Route>
                 <Route path="/rooms">
                   <Rooms />

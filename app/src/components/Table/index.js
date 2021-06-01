@@ -22,7 +22,7 @@ function Table({ width, height, handleClick, history }) {
 
   return (
     <>
-      <div className="table">{table}</div>
+      <div className={`table-${width}`}>{table}</div>
     </>
   )
 }
