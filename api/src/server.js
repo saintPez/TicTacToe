@@ -241,7 +241,7 @@ io.on('connection', (socket) => {
       })
       .value()
 
-    if (!room) return socket.emit('game-ready', { success: false })    
+    if (!room) return socket.emit('game-ready', { success: false })
 
     let users = room.users
 
@@ -555,148 +555,111 @@ const createNewRoom = async () => {
 const checkWin = (x, y, consecutive, history, width, height, mark) => {
   let consecutive_mark = 0
 
-  if (width - (x - 1) >= consecutive) {
-    for (let i = 1; i < consecutive; i++) {
-      if (
-        history.find(
-          (e) =>
-            e.height === y && e.width === x + i && `${e.mark}` === `${mark}`
-        )
-      ) {
-        consecutive_mark++
-      } else break
-    }
-
-    if (consecutive_mark === consecutive - 1) return true
-
-    consecutive_mark = 0
-
-    if (height - (y - 1) >= consecutive) {
-      for (let i = 1; i < consecutive; i++) {
-        if (
-          history.find(
-            (e) =>
-              e.height === y + i &&
-              e.width === x + i &&
-              `${e.mark}` === `${mark}`
-          )
-        ) {
-          consecutive_mark++
-        } else break
-      }
-    }
+  for (let i = 1; i < consecutive; i++) {
+    if (
+      history.find(
+        (e) => e.height === y && e.width === x + i && `${e.mark}` === `${mark}`
+      )
+    ) {
+      consecutive_mark++
+    } else break
   }
 
-  if (consecutive_mark === consecutive - 1) return true
+  if (consecutive_mark >= consecutive - 1) return true
+
+  for (let i = 1; i < consecutive; i++) {
+    if (
+      history.find(
+        (e) => e.height === y && e.width === x - i && `${e.mark}` === `${mark}`
+      )
+    ) {
+      consecutive_mark++
+    } else break
+  }
+
+  if (consecutive_mark >= consecutive - 1) return true
 
   consecutive_mark = 0
 
-  if (height - (y - 1) >= consecutive) {
-    for (let i = 1; i < consecutive; i++) {
-      if (
-        history.find(
-          (e) =>
-            e.height === y + i && e.width === x && `${e.mark}` === `${mark}`
-        )
-      ) {
-        consecutive_mark++
-      } else break
-    }
-
-    if (consecutive_mark === consecutive - 1) return true
-
-    consecutive_mark = 0
-
-    if (x >= consecutive) {
-      for (let i = 1; i < consecutive; i++) {
-        if (
-          history.find(
-            (e) =>
-              e.height === y + i &&
-              e.width === x - i &&
-              `${e.mark}` === `${mark}`
-          )
-        ) {
-          consecutive_mark++
-        } else break
-      }
-    }
+  for (let i = 1; i < consecutive; i++) {
+    if (
+      history.find(
+        (e) => e.height === y - i && e.width === x && `${e.mark}` === `${mark}`
+      )
+    ) {
+      consecutive_mark++
+    } else break
   }
 
-  if (consecutive_mark === consecutive - 1) return true
+  if (consecutive_mark >= consecutive - 1) return true
+
+  for (let i = 1; i < consecutive; i++) {
+    if (
+      history.find(
+        (e) => e.height === y + i && e.width === x && `${e.mark}` === `${mark}`
+      )
+    ) {
+      consecutive_mark++
+    } else break
+  }
+
+  if (consecutive_mark >= consecutive - 1) return true
 
   consecutive_mark = 0
 
-  if (x >= consecutive) {
-    for (let i = 1; i < consecutive; i++) {
-      if (
-        history.find(
-          (e) =>
-            e.height === y && e.width === x - i && `${e.mark}` === `${mark}`
-        )
-      ) {
-        consecutive_mark++
-      } else break
-    }
-
-    if (consecutive_mark === consecutive - 1) return true
-
-    consecutive_mark = 0
-
-    if (y >= consecutive) {
-      for (let i = 1; i < consecutive; i++) {
-        if (
-          history.find(
-            (e) =>
-              e.height === y - i &&
-              e.width === x - i &&
-              `${e.mark}` === `${mark}`
-          )
-        ) {
-          consecutive_mark++
-        } else break
-      }
-    }
+  for (let i = 1; i < consecutive; i++) {
+    if (
+      history.find(
+        (e) =>
+          e.height === y + i && e.width === x + i && `${e.mark}` === `${mark}`
+      )
+    ) {
+      consecutive_mark++
+    } else break
   }
 
-  if (consecutive_mark === consecutive - 1) return true
+  if (consecutive_mark >= consecutive - 1) return true
+
+  for (let i = 1; i < consecutive; i++) {
+    if (
+      history.find(
+        (e) =>
+          e.height === y - i && e.width === x - i && `${e.mark}` === `${mark}`
+      )
+    ) {
+      consecutive_mark++
+    } else break
+  }
+
+  if (consecutive_mark >= consecutive - 1) return true
 
   consecutive_mark = 0
 
-  if (y >= consecutive) {
-    for (let i = 1; i < consecutive; i++) {
-      if (
-        history.find(
-          (e) =>
-            e.height === y - i && e.width === x && `${e.mark}` === `${mark}`
-        )
-      ) {
-        consecutive_mark++
-      } else break
-    }
-
-    if (consecutive_mark === consecutive - 1) return true
-
-    consecutive_mark = 0
-
-    if (width - (x - 1) >= consecutive) {
-      for (let i = 1; i < consecutive; i++) {
-        if (consecutive_mark === consecutive - 1) return true
-        if (
-          history.find(
-            (e) =>
-              e.height === y - i &&
-              e.width === x + i &&
-              `${e.mark}` === `${mark}`
-          )
-        ) {
-          consecutive_mark++
-        } else break
-      }
-    }
-
-    if (consecutive_mark === consecutive - 1) return true
+  for (let i = 1; i < consecutive; i++) {
+    if (
+      history.find(
+        (e) =>
+          e.height === y + i && e.width === x - i && `${e.mark}` === `${mark}`
+      )
+    ) {
+      consecutive_mark++
+    } else break
   }
+
+  if (consecutive_mark >= consecutive - 1) return true
+
+  for (let i = 1; i < consecutive; i++) {
+    if (
+      history.find(
+        (e) =>
+          e.height === y - i && e.width === x + i && `${e.mark}` === `${mark}`
+      )
+    ) {
+      consecutive_mark++
+    } else break
+  }
+
+  if (consecutive_mark >= consecutive - 1) return true
 
   return false
 }
