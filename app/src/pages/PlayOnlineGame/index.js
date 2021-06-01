@@ -51,6 +51,14 @@ function PlayOnlineGame() {
               history={game.history}
             />
           </div>
+          {game.win ? (
+            <div>
+              <div>Win</div>
+              <div>{game.win.name}</div>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       )}
     </>

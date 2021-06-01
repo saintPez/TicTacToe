@@ -241,7 +241,7 @@ io.on('connection', (socket) => {
       })
       .value()
 
-    if (!room) return socket.emit('game-ready', { success: false })
+    if (!room) return socket.emit('game-ready', { success: false })    
 
     let users = room.users
 
@@ -286,7 +286,7 @@ io.on('connection', (socket) => {
       })
       .value()
 
-    if (!room) return socket.emit('game-set', { success: false })
+    if (!room || room.win) return socket.emit('game-set', { success: false })
 
     if (
       room.users.filter((user) => user.playing === true).length !==
@@ -305,33 +305,76 @@ io.on('connection', (socket) => {
 
     history.push({ width, height, mark: marks[turn] })
 
-    turn++
-    if (turn >= room.users.length) turn = 0
+    const win = checkWin(
+      width,
+      height,
+      room.config.consecutive,
+      history,
+      room.config.width,
+      room.config.height,
+      marks[turn]
+    )
 
-    await lowdb()
-      .get('rooms')
-      .find({ id: `${room.id}` })
-      .assign({ history, turn })
-      .write()
+    if (win) {
+      await lowdb()
+        .get('rooms')
+        .find({ id: `${room.id}` })
+        .assign({
+          history,
+          turn: undefined,
+          win: { id: socket.user?.id, name: socket.user?.name },
+        })
+        .write()
 
-    socket.emit('game-set', {
-      success: true,
-      game: {
+      socket.emit('game-set', {
+        success: true,
+        game: {
+          id: room.id,
+          history,
+          users: room.users,
+          playing: true,
+          config: room.config,
+          win: { id: socket.user?.id, name: socket.user?.name },
+        },
+      })
+
+      socket.to(room.id).emit('game', {
         id: room.id,
         history,
         users: room.users,
         playing: true,
         config: room.config,
-      },
-    })
+        win: { id: socket.user?.id, name: socket.user?.name },
+      })
+    } else {
+      turn++
+      if (turn >= room.users.length) turn = 0
 
-    socket.to(room.id).emit('game', {
-      id: room.id,
-      history,
-      users: room.users,
-      playing: true,
-      config: room.config,
-    })
+      await lowdb()
+        .get('rooms')
+        .find({ id: `${room.id}` })
+        .assign({ history, turn })
+        .write()
+
+      socket.emit('game-set', {
+        success: true,
+        game: {
+          id: room.id,
+          history,
+          users: room.users,
+          playing: true,
+          config: room.config,
+        },
+      })
+
+      socket.to(room.id).emit('game', {
+        id: room.id,
+        history,
+        users: room.users,
+        playing: true,
+        config: room.config,
+      })
+    }
   })
 
   /*socket.on('check-in', (user) => {
@@ -508,3 +551,152 @@ const createNewRoom = async () => {
   //   users: users,
   // })
 }*/
+
+const checkWin = (x, y, consecutive, history, width, height, mark) => {
+  let consecutive_mark = 0
+
+  if (width - (x - 1) >= consecutive) {
+    for (let i = 1; i < consecutive; i++) {
+      if (
+        history.find(
+          (e) =>
+            e.height === y && e.width === x + i && `${e.mark}` === `${mark}`
+        )
+      ) {
+        consecutive_mark++
+      } else break
+    }
+
+    if (consecutive_mark === consecutive - 1) return true
+
+    consecutive_mark = 0
+
+    if (height - (y - 1) >= consecutive) {
+      for (let i = 1; i < consecutive; i++) {
+        if (
+          history.find(
+            (e) =>
+              e.height === y + i &&
+              e.width === x + i &&
+              `${e.mark}` === `${mark}`
+          )
+        ) {
+          consecutive_mark++
+        } else break
+      }
+    }
+  }
+
+  if (consecutive_mark === consecutive - 1) return true
+
+  consecutive_mark = 0
+
+  if (height - (y - 1) >= consecutive) {
+    for (let i = 1; i < consecutive; i++) {
+      if (
+        history.find(
+          (e) =>
+            e.height === y + i && e.width === x && `${e.mark}` === `${mark}`
+        )
+      ) {
+        consecutive_mark++
+      } else break
+    }
+
+    if (consecutive_mark === consecutive - 1) return true
+
+    consecutive_mark = 0
+
+    if (x >= consecutive) {
+      for (let i = 1; i < consecutive; i++) {
+        if (
+          history.find(
+            (e) =>
+              e.height === y + i &&
+              e.width === x - i &&
+              `${e.mark}` === `${mark}`
+          )
+        ) {
+          consecutive_mark++
+        } else break
+      }
+    }
+  }
+
+  if (consecutive_mark === consecutive - 1) return true
+
+  consecutive_mark = 0
+
+  if (x >= consecutive) {
+    for (let i = 1; i < consecutive; i++) {
+      if (
+        history.find(
+          (e) =>
+            e.height === y && e.width === x - i && `${e.mark}` === `${mark}`
+        )
+      ) {
+        consecutive_mark++
+      } else break
+    }
+
+    if (consecutive_mark === consecutive - 1) return true
+
+    consecutive_mark = 0
+
+    if (y >= consecutive) {
+      for (let i = 1; i < consecutive; i++) {
+        if (
+          history.find(
+            (e) =>
+              e.height === y - i &&
+              e.width === x - i &&
+              `${e.mark}` === `${mark}`
+          )
+        ) {
+          consecutive_mark++
+        } else break
+      }
+    }
+  }
+
+  if (consecutive_mark === consecutive - 1) return true
+
+  consecutive_mark = 0
+
+  if (y >= consecutive) {
+    for (let i = 1; i < consecutive; i++) {
+      if (
+        history.find(
+          (e) =>
+            e.height === y - i && e.width === x && `${e.mark}` === `${mark}`
+        )
+      ) {
+        consecutive_mark++
+      } else break
+    }
+
+    if (consecutive_mark === consecutive - 1) return true
+
+    consecutive_mark = 0
+
+    if (width - (x - 1) >= consecutive) {
+      for (let i = 1; i < consecutive; i++) {
+        if (consecutive_mark === consecutive - 1) return true
+        if (
+          history.find(
+            (e) =>
+              e.height === y - i &&
+              e.width === x + i &&
+              `${e.mark}` === `${mark}`
+          )
+        ) {
+          consecutive_mark++
+        } else break
+      }
+    }
+
+    if (consecutive_mark === consecutive - 1) return true
+  }
+
+  return false
+}
