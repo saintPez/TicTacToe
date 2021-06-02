@@ -70,7 +70,7 @@ function PlayOnlineGame() {
             />
           </div>
           {game.win ? (
-            game.inverted ? (
+            game.config.inverted ? (
               <div>
                 <div>Lose</div>
                 <div>{game.win.name}</div>

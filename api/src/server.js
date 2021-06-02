@@ -410,7 +410,7 @@ io.on('connection', (socket) => {
       )
 
       for (const user of users) {
-        const account = await tiedUser(`${socket.user?.id}`, `${newGame._id}`)
+        const account = await tiedUser(`${user.id}`, `${newGame._id}`)
 
         socket.to(`${user.socket}`).emit('game', {
           id: room.id,
@@ -843,7 +843,10 @@ const wonUser = async (userId, gameId) => {
   const { score } = await User.findOne({ _id: userId })
   await User.updateOne(
     { _id: userId },
-    { $set: { score: score + 3 }, $push: { 'games.won': `${gameId}` } }
+    {
+      $set: { score: score + 3 },
+      $push: { games: { data: `${gameId}`, result: true } },
+    }
   )
 
   return await createToken(userId)
@@ -855,7 +858,7 @@ const lostUser = async (userId, gameId) => {
     { _id: userId },
     {
       $set: { score: score - 3 <= 10 ? 10 : score - 3 },
-      $push: { 'games.lost': `${gameId}` },
+      $push: { games: { data: `${gameId}`, result: false } },
     }
   )
 
@@ -866,7 +869,7 @@ const tiedUser = async (userId, gameId) => {
   await User.updateOne(
     { _id: userId },
     {
-      $push: { 'games.tied': `${gameId}` },
+      $push: { games: { data: `${gameId}` } },
     }
   )
 

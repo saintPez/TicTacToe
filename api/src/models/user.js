@@ -17,23 +17,18 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  games: {
-    won: {
-      type: [Schema.Types.ObjectId],
-      ref: 'Game',
-      default: [],
+  games: [
+    {
+      data: {
+        type: Schema.Types.ObjectId,
+        ref: 'Game',
+      },
+      result: {
+        type: Boolean,
+        required: false,
+      },
     },
-    lost: {
-      type: [Schema.Types.ObjectId],
-      ref: 'Game',
-      default: [],
-    },
-    tied: {
-      type: [Schema.Types.ObjectId],
-      ref: 'Game',
-      default: [],
-    },
-  },
+  ],
   score: {
     type: Number,
     default: 10,
