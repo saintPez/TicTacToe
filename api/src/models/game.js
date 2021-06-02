@@ -6,10 +6,22 @@ const gameSchema = new Schema({
     ref: 'User',
     required: true,
   },
-  history: {
-    type: [Number],
-    required: true,
-  },
+  history: [
+    {
+      width: {
+        type: Number,
+        required: true,
+      },
+      height: {
+        type: Number,
+        required: true,
+      },
+      mark: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
   board: {
     width: {
       type: Number,
@@ -31,7 +43,6 @@ const gameSchema = new Schema({
   result: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
   },
 })
 

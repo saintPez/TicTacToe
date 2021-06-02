@@ -26,21 +26,31 @@ function Header() {
       instance
         .get('/user')
         .then((response) => {
-          socket.emit('signIn', {
-            id: response.data.user._id,
-            name: response.data.user.username || response.data.user.name,
-          })
-          socket.once('signIn', (socketResponse) => {
+          if (user.socket) {
             dispatch(
-              setUser({
+              updateUser({
                 ...response.data.user,
-                socket: socketResponse.success,
-                socketId: socket.id,
                 access_token: cookies.Authorization,
                 refresh_token: cookies.refresh_token,
               })
             )
-          })
+          } else {
+            socket.emit('signIn', {
+              id: response.data.user._id,
+              name: response.data.user.username || response.data.user.name,
+            })
+            socket.once('signIn', (socketResponse) => {
+              dispatch(
+                setUser({
+                  ...response.data.user,
+                  socket: socketResponse.success,
+                  socketId: socket.id,
+                  access_token: cookies.Authorization,
+                  refresh_token: cookies.refresh_token,
+                })
+              )
+            })
+          }
         })
         .catch((error) => {
           removeCookie('Authorization')

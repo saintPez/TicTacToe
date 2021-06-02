@@ -1,9 +1,17 @@
 const { config } = require('dotenv')
 config()
 
+const jwt = require('jsonwebtoken')
+
 const app = require('./app')
 
-const { PORT } = require('./env')
+const {
+  PORT,
+  ACCESS_TOKEN_SECRET,
+  ACCESS_TOKEN_EXPIRES_IN,
+  REFRESH_TOKEN_SECRET,
+  REFRESH_TOKEN_EXPIRES_IN,
+} = require('./env')
 
 //const bcrypt = require('bcrypt')
 
@@ -11,6 +19,9 @@ const { PORT } = require('./env')
 
 require('./database')
 const { connection, lowdb } = require('./lowdb')
+
+const Game = require('./models/game')
+const User = require('./models/user')
 
 connection()
 const server = app.listen(PORT, async () => {
@@ -157,7 +168,7 @@ io.on('connection', (socket) => {
 
   socket.on('leave', async () => {
     for (let i = 0; i < socket.rooms.length; i++) {
-      if (socket.rooms[i] !== socket.id) socket.leave(socket.rooms[i])
+      if (`${socket.rooms[i]}` !== `${socket.id}`) socket.leave(socket.rooms[i])
     }
     await leaveRoom(socket)
 
@@ -319,32 +330,111 @@ io.on('connection', (socket) => {
       await lowdb()
         .get('rooms')
         .find({ id: `${room.id}` })
-        .assign({
-          history,
-          turn: undefined,
-          win: { id: socket.user?.id, name: socket.user?.name },
-        })
+        .assign({ finished: true })
         .write()
 
-      socket.emit('game-set', {
-        success: true,
-        game: {
+      const newGame = await createGame({ ...room, history }, socket.user?.id)
+
+      const users = room.users.filter(
+        (user) => `${user.id}` !== `${socket.user?.id}`
+      )
+
+      if (room.config.inverted) {
+        for (const user of users) {
+          const account = await wonUser(`${user.id}`, `${newGame._id}`)
+
+          socket.to(`${user.socket}`).emit('game', {
+            id: room.id,
+            history,
+            users: room.users,
+            playing: true,
+            config: room.config,
+            win: { id: socket.user?.id, name: socket.user?.name },
+            gameId: newGame.id,
+            account,
+          })
+        }
+
+        const account = await lostUser(`${socket.user?.id}`, `${newGame._id}`)
+
+        socket.emit('game', {
           id: room.id,
           history,
           users: room.users,
           playing: true,
           config: room.config,
           win: { id: socket.user?.id, name: socket.user?.name },
-        },
-      })
+          gameId: newGame.id,
+          account,
+        })
+      } else {
+        for (const user of users) {
+          const account = await lostUser(`${user.id}`, `${newGame._id}`)
 
-      socket.to(room.id).emit('game', {
+          socket.to(`${user.socket}`).emit('game', {
+            id: room.id,
+            history,
+            users: room.users,
+            playing: true,
+            config: room.config,
+            win: { id: socket.user?.id, name: socket.user?.name },
+            gameId: newGame.id,
+            account,
+          })
+        }
+
+        const account = await wonUser(`${socket.user?.id}`, `${newGame._id}`)
+
+        socket.emit('game', {
+          id: room.id,
+          history,
+          users: room.users,
+          playing: true,
+          config: room.config,
+          win: { id: socket.user?.id, name: socket.user?.name },
+          gameId: newGame.id,
+          account,
+        })
+      }
+    } else if (room.config.width * room.config.height === history.length) {
+      await lowdb()
+        .get('rooms')
+        .find({ id: `${room.id}` })
+        .assign({ finished: true })
+        .write()
+
+      const newGame = await createGame({ ...room, history })
+
+      const users = room.users.filter(
+        (user) => `${user.id}` !== `${socket.user?.id}`
+      )
+
+      for (const user of users) {
+        const account = await tiedUser(`${socket.user?.id}`, `${newGame._id}`)
+
+        socket.to(`${user.socket}`).emit('game', {
+          id: room.id,
+          history,
+          users: room.users,
+          playing: true,
+          config: room.config,
+          tied: true,
+          gameId: newGame.id,
+          account,
+        })
+      }
+
+      const account = await tiedUser(`${socket.user?.id}`, `${newGame._id}`)
+
+      socket.emit('game', {
         id: room.id,
         history,
         users: room.users,
         playing: true,
         config: room.config,
-        win: { id: socket.user?.id, name: socket.user?.name },
+        tied: true,
+        gameId: newGame.id,
+        account,
       })
     } else {
       turn++
@@ -449,14 +539,83 @@ const leaveRoom = async (socket) => {
     .value()
 
   if (room) {
-    if (room.users.length == 1) {
+    if (room.finished) {
+      await lowdb().get('rooms').remove({ id: room.id }).write()
+    } else if (room.playing) {
+      await lowdb().get('rooms').remove({ id: room.id }).write()
+
+      const users = room.users.filter(
+        (user) => `${user.id}` !== `${socket.user?.id}`
+      )
+
+      if (room.config.inverted) {
+        const newGame = await createGame(room, socket.user?.id)
+
+        for (const user of users) {
+          const account = await wonUser(`${user.id}`, `${newGame._id}`)
+
+          socket.to(`${user.socket}`).emit('game', {
+            id: room.id,
+            history: room.history,
+            users: room.users,
+            playing: true,
+            config: room.config,
+            win: { id: socket.user?.id, name: socket.user?.name },
+            gameId: newGame.id,
+            account,
+          })
+        }
+
+        const account = await lostUser(`${socket.user?.id}`, `${newGame._id}`)
+
+        socket.emit('game', {
+          id: room.id,
+          history: room.history,
+          users: room.users,
+          playing: true,
+          config: room.config,
+          win: { id: socket.user?.id, name: socket.user?.name },
+          gameId: newGame.id,
+          account,
+        })
+      } else {
+        const newGame = await createGame(room)
+
+        for (const user of users) {
+          const account = await wonUser(`${user.id}`, `${newGame._id}`)
+
+          socket.to(`${user.socket}`).emit('game', {
+            id: room.id,
+            history: room.history,
+            users: room.users,
+            playing: true,
+            config: room.config,
+            win: { id: user.id, name: user.name },
+            gameId: newGame.id,
+            account,
+          })
+        }
+
+        const account = await lostUser(`${socket.user?.id}`, `${newGame._id}`)
+
+        socket.emit('game', {
+          id: room.id,
+          history: room.history,
+          users: room.users,
+          playing: true,
+          config: room.config,
+          gameId: newGame.id,
+          account,
+        })
+      }
+    } else if (room.users.length == 1) {
       await lowdb().get('rooms').remove({ id: room.id }).write()
     } else {
       const index = room.users.findIndex(
-        (_user) => _user == `${socket.user?.id}`
+        (_user) => `${_user.id}` == `${socket.user?.id}`
       )
       room.users.splice(index, 1)
-      await lowdb().get('rooms').assign({ users: room.users })
+      await lowdb().get('rooms').assign({ users: room.users }).write()
     }
   }
 }
@@ -662,4 +821,77 @@ const checkWin = (x, y, consecutive, history, width, height, mark) => {
   if (consecutive_mark >= consecutive - 1) return true
 
   return false
+}
+
+const createGame = async (room, result = false) => {
+  const newGame = await Game.create({
+    players: room.users.map((user) => user.id),
+    history: room.history,
+    board: {
+      width: room.config.width,
+      height: room.config.height,
+      consecutive: room.config.consecutive,
+      inverted: room.config.inverted,
+    },
+    result: result ? result : undefined,
+  })
+
+  return newGame
+}
+
+const wonUser = async (userId, gameId) => {
+  const { score } = await User.findOne({ _id: userId })
+  await User.updateOne(
+    { _id: userId },
+    { $set: { score: score + 3 }, $push: { 'games.won': `${gameId}` } }
+  )
+
+  return await createToken(userId)
+}
+
+const lostUser = async (userId, gameId) => {
+  const { score } = await User.findOne({ _id: userId })
+  await User.updateOne(
+    { _id: userId },
+    {
+      $set: { score: score - 3 <= 10 ? 10 : score - 3 },
+      $push: { 'games.lost': `${gameId}` },
+    }
+  )
+
+  return await createToken(userId)
+}
+
+const tiedUser = async (userId, gameId) => {
+  await User.updateOne(
+    { _id: userId },
+    {
+      $push: { 'games.tied': `${gameId}` },
+    }
+  )
+
+  return await createToken(userId)
+}
+
+const createToken = async (userId) => {
+  const user = await User.findOne({ _id: `${userId}` })
+
+  const access_token = await jwt.sign(
+    { _id: user._id, updatedAt: user.updatedAt.getTime() },
+    ACCESS_TOKEN_SECRET,
+    { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
+  )
+  const refresh_token = await jwt.sign(
+    { _id: user._id },
+    REFRESH_TOKEN_SECRET + user.updatedAt.getTime(),
+    { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
+  )
+
+  return {
+    access_token,
+    token_type: 'Bearer',
+    expires_in: ACCESS_TOKEN_EXPIRES_IN,
+    refresh_token,
+    refresh_token_expires_in: REFRESH_TOKEN_EXPIRES_IN,
+  }
 }
