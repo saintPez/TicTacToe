@@ -109,10 +109,10 @@ function Header() {
             <HashtagIcon className="header-item-icon" />
             <span className="header-item-text">Play</span>
           </Link>
-          <a href="#user" className="header-item header-item-right">
+          <Link to={`/Games`} className="header-item header-item-right">
             <BookOpenIcon className="header-item-icon" />
             <span className="header-item-text">Games</span>
-          </a>
+            </Link>
         </>
       ) : (
         <>

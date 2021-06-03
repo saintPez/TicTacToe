@@ -38,7 +38,7 @@ function RoomsComponent() {
               <thead>
                 <tr>
                   <th>Players</th>
-                  <th>Table</th>
+                  <th>Board</th>
                   <th>Consecutive</th>
                   <th>Inverted</th>
                   <th>Public</th>
@@ -48,27 +48,27 @@ function RoomsComponent() {
                 {rooms.map((room) => (
                   <tr key={room.id}>
                     <td>
-                      <Link to={`room/${room.id}`}>
+                      <Link to={`/room/${room.id}`}>
                         {room.users.length}/{room.config.players}
                       </Link>
                     </td>
                     <td>
-                      <Link to={`room/${room.id}`}>
+                      <Link to={`/room/${room.id}`}>
                         {room.config.width}x{room.config.height}
                       </Link>
                     </td>
                     <td>
-                      <Link to={`room/${room.id}`}>
+                      <Link to={`/room/${room.id}`}>
                         {room.config.consecutive}
                       </Link>
                     </td>
                     <td>
                       <Link
-                        to={`room/${room.id}`}
+                        to={`/room/${room.id}`}
                       >{`${room.config.inverted}`}</Link>
                     </td>
                     <td>
-                      <Link to={`room/${room.id}`}>
+                      <Link to={`/room/${room.id}`}>
                         {`${room.config.password == null}`}
                       </Link>
                     </td>

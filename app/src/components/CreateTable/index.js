@@ -28,9 +28,9 @@ function CreateTable({ config, setConfig }) {
     for (let a = 0; a < 11; a++) {
       if (i === 0 || a === 0) {
         if (a === 0) {
-          if (i === 0) table.push(<div>{` `}</div>)
-          else table.push(<div>{i}</div>)
-        } else table.push(<div>{a}</div>)
+          if (i === 0) table.push(<div key="center">{` `}</div>)
+          else table.push(<div key={`column-${i}`}>{i}</div>)
+        } else table.push(<div key={`row-${a}`}>{a}</div>)
       } else {
         table.push(
           <CreateTableItem
