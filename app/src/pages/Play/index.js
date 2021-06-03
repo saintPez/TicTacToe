@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useHistory, Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 import LoadingSpin from '../../components/LoadingSpin'
 
@@ -13,12 +14,13 @@ import { ClipboardListIcon } from '@heroicons/react/outline'
 import './styles.css'
 
 function Play() {
+  const user = useSelector((state) => state.user)
   const history = useHistory()
-
   const [isLoading, setIsLoading] = useState(true)
   const [, setRooms] = useState([])
 
   useEffect(() => {
+    if (user.room) history.push('/leave')
     instance
       .get(`/socket/?socket=${socket.id}`, {
         config: { test: 'hola' },

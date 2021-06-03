@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useHistory, Link } from 'react-router-dom'
 
 import LoadingSpin from '../../components/LoadingSpin'
 
@@ -15,9 +15,11 @@ function User() {
   const history = useHistory()
   const { id } = useParams()
   const [user, setUser] = useState({})
+  const [isGames, setIsGames] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    if (user.room) history.push('/leave')
     instance
       .get(`/user/${id}`)
       .then((response) => {
@@ -73,12 +75,57 @@ function User() {
             </div>
           </div>
           <div className="main-item-user-menu user-menu">
-            <a href="#user" className="user-menu-item user-menu-item-left">
+            <a
+              href="#notes"
+              onClick={() => {
+                setIsGames(false)
+              }}
+              className="user-menu-item user-menu-item-left"
+            >
               Notes
             </a>
-            <a href="#user" className="user-menu-item user-menu-item-right">
+            <a
+              href="#games"
+              onClick={() => {
+                setIsGames(true)
+              }}
+              className="user-menu-item user-menu-item-right"
+            >
               Games
             </a>
+          </div>
+
+          <div className="main-item">
+            {isGames ? (
+              <table className="rooms-table">
+                <thead>
+                  <tr>
+                    <th>id</th>
+                    <th>win</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {user.games
+                    .map((game) => (
+                      <tr key={game.data}>
+                        <td>
+                          <Link to={`game/${game.data}`}>{game.data}</Link>
+                        </td>
+                        <td>
+                          <Link to={`game/${game.data}`}>
+                            {`${game.result}` === 'undefined'
+                              ? ''
+                              : `${game.result}`}
+                          </Link>
+                        </td>
+                      </tr>
+                    ))
+                    .reverse()}
+                </tbody>
+              </table>
+            ) : (
+              <></>
+            )}
           </div>
         </>
       )}

@@ -22,6 +22,7 @@ function Rooms() {
   })
 
   useEffect(() => {
+    if (user.room) history.push('/leave')
     if (!user.socket) history.push('/home')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
