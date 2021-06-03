@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useHistory, Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 import LoadingSpin from '../../components/LoadingSpin'
 
@@ -14,12 +15,13 @@ import './styles.css'
 function User() {
   const history = useHistory()
   const { id } = useParams()
+  const _user = useSelector((state) => state.user)
   const [user, setUser] = useState({})
   const [isGames, setIsGames] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (user.room) history.push('/leave')
+    if (_user.room) history.push('/leave')
     instance
       .get(`/user/${id}`)
       .then((response) => {
@@ -109,10 +111,10 @@ function User() {
                     .map((game) => (
                       <tr key={game.data}>
                         <td>
-                          <Link to={`game/${game.data}`}>{game.data}</Link>
+                          <Link to={`/game/${game.data}`}>{game.data}</Link>
                         </td>
                         <td>
-                          <Link to={`game/${game.data}`}>
+                          <Link to={`/game/${game.data}`}>
                             {`${game.result}` === 'undefined'
                               ? ''
                               : `${game.result}`}

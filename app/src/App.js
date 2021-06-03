@@ -17,6 +17,7 @@ import Rooms from './pages/Rooms/'
 import Room from './pages/Room/'
 import Leave from './pages/Leave'
 import PlayOnlineGame from './pages/PlayOnlineGame'
+import Game from './pages/Game'
 
 import TicTacToe from './components/TicTacToe'
 import Account from './components/Account'
@@ -76,6 +77,9 @@ function App() {
                 </Route>
                 <Route path="/leave">
                   <Leave />
+                </Route>
+                <Route path="/game/:id">
+                  <Game />
                 </Route>
               </div>
               <div className="main-column-right">
