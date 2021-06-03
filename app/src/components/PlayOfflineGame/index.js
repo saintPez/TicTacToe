@@ -13,6 +13,9 @@ function PlayOfflineGame({ config }) {
   const handleClick = (width, height) => {
     if (game.finished) return
 
+    if (game.history.find((e) => e.width === width && e.height === height))
+      return
+
     let history = game.history
     let turn = game.turn
 
