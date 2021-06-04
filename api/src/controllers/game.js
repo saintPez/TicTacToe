@@ -22,14 +22,12 @@ const getGames = async (req, res, next) => {
     const limit = _limit > 0 && _limit < 25 ? _limit : 25
     const offset = _offset > 0 ? _offset : 0
 
-    console.log('limit', limit)
-    console.log('offset', offset)
-
     const countDocuments = await Game.countDocuments()
 
     const last_document = offset + limit >= countDocuments ? -1 : offset + limit
 
     const game = await Game.find({}, null, {
+      sort: { createdAt: 'descending' },
       skip: offset,
       limit: limit,
     })

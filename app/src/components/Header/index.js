@@ -4,7 +4,9 @@ import { useCookies } from 'react-cookie'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { setUser, updateUser, resetUser } from '../../actions/user.actions'
+
 import instance from '../../axios'
+import socket from '../../socket'
 
 import { HashtagIcon } from '@heroicons/react/solid'
 import { BookOpenIcon, UserIcon, UserAddIcon } from '@heroicons/react/outline'
@@ -24,13 +26,31 @@ function Header() {
       instance
         .get('/user')
         .then((response) => {
-          dispatch(
-            setUser({
-              ...response.data.user,
-              access_token: cookies.Authorization,
-              refresh_token: cookies.refresh_token,
+          if (user.socket) {
+            dispatch(
+              updateUser({
+                ...response.data.user,
+                access_token: cookies.Authorization,
+                refresh_token: cookies.refresh_token,
+              })
+            )
+          } else {
+            socket.emit('signIn', {
+              id: response.data.user._id,
+              name: response.data.user.username || response.data.user.name,
             })
-          )
+            socket.once('signIn', (socketResponse) => {
+              dispatch(
+                setUser({
+                  ...response.data.user,
+                  socket: socketResponse.success,
+                  socketId: socket.id,
+                  access_token: cookies.Authorization,
+                  refresh_token: cookies.refresh_token,
+                })
+              )
+            })
+          }
         })
         .catch((error) => {
           removeCookie('Authorization')
@@ -85,14 +105,14 @@ function Header() {
             </span>
           </Link>
 
-          <a href="#user" className="header-item">
+          <Link to={`/play`} className="header-item">
             <HashtagIcon className="header-item-icon" />
             <span className="header-item-text">Play</span>
-          </a>
-          <a href="#user" className="header-item header-item-right">
+          </Link>
+          <Link to={`/Games`} className="header-item header-item-right">
             <BookOpenIcon className="header-item-icon" />
             <span className="header-item-text">Games</span>
-          </a>
+            </Link>
         </>
       ) : (
         <>

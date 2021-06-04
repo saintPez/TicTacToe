@@ -1,6 +1,18 @@
+import { useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+
 import './styles.css'
 
 function Home() {
+  const history = useHistory()
+  const user = useSelector((state) => state.user)
+
+  useEffect(() => {
+    if (user.room) history.push('/leave')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <>
       <div className="main-item">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useHistory, Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 import LoadingSpin from '../../components/LoadingSpin'
 
@@ -14,16 +15,18 @@ import './styles.css'
 function User() {
   const history = useHistory()
   const { id } = useParams()
+  const _user = useSelector((state) => state.user)
   const [user, setUser] = useState({})
+  const [isGames, setIsGames] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    if (_user.room) history.push('/leave')
     instance
       .get(`/user/${id}`)
       .then((response) => {
         setUser({ ...response.data.user })
         setIsLoading(false)
-        console.log({ ...user })
       })
       .catch((error) => {
         history.push('/')
@@ -34,7 +37,7 @@ function User() {
   return (
     <>
       {isLoading ? (
-        <div className="main-item user-loading">
+        <div className="main-item loading">
           <LoadingSpin />
         </div>
       ) : (
@@ -66,14 +69,66 @@ function User() {
                   <HeartIcon className="user-body-info-item-icon" />
                   <div className="user-body-info-item-data">{user.score}</div>
                 </div>
-                <div className="user-body-info-item">
+                <div className="user-body-info-item user-body-info-item-third">
                   <HashtagIcon className="user-body-info-item-icon" />
                   <div className="user-body-info-item-data">{user.score}</div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="main-item">PARTIDAS</div>
+          <div className="main-item-user-menu user-menu">
+            <a
+              href="#notes"
+              onClick={() => {
+                setIsGames(false)
+              }}
+              className="user-menu-item user-menu-item-left"
+            >
+              Notes
+            </a>
+            <a
+              href="#games"
+              onClick={() => {
+                setIsGames(true)
+              }}
+              className="user-menu-item user-menu-item-right"
+            >
+              Games
+            </a>
+          </div>
+
+          <div className="main-item">
+            {isGames ? (
+              <table className="rooms-table">
+                <thead>
+                  <tr>
+                    <th>id</th>
+                    <th>win</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {user.games
+                    .map((game) => (
+                      <tr key={game.data}>
+                        <td>
+                          <Link to={`/game/${game.data}`}>{game.data}</Link>
+                        </td>
+                        <td>
+                          <Link to={`/game/${game.data}`}>
+                            {`${game.result}` === 'undefined'
+                              ? ''
+                              : `${game.result}`}
+                          </Link>
+                        </td>
+                      </tr>
+                    ))
+                    .reverse()}
+                </tbody>
+              </table>
+            ) : (
+              <></>
+            )}
+          </div>
         </>
       )}
     </>
