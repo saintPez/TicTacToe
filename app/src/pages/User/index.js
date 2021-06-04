@@ -26,50 +26,16 @@ function User() {
         console.log({ ...user })
       })
       .catch((error) => {
-        // history.push('/')
+        history.push('/')
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  //<LoadingSpin />
 
   return (
     <>
       {isLoading ? (
         <div className="main-item user-loading">
-          <div className="main-item-user">
-            <div className="user-header">
-              <div className="user-header-avatar">S</div>
-            </div>
-            <div className="user-body">
-              <h1 className="h1 user-body-username">santiagogomezsolarte</h1>
-              <div className="user-body-data">
-                {user.username ? (
-                  <div className="user-body-name">Santiago Gómez Solarte </div>
-                ) : (
-                  <></>
-                )}
-                <div className="user-body-email">
-                  santiagogomezsolarte@gmail.com{' '}
-                </div>
-              </div>
-              <div className="user-body-info">
-                <div className="user-body-info-item">
-                  <CalendarIcon className="user-body-info-item-icon" />
-                  <div className="user-body-info-item-data">19/05/2021</div>
-                </div>
-                <div className="user-body-info-item">
-                  <HeartIcon className="user-body-info-item-icon" />
-                  <div className="user-body-info-item-data">10</div>
-                </div>
-                <div className="user-body-info-item">
-                  <HashtagIcon className="user-body-info-item-icon" />
-                  <div className="user-body-info-item-data">10</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="main-item">PARTIDAS</div>
+          <LoadingSpin />
         </div>
       ) : (
         <>

@@ -35,7 +35,17 @@ router.delete(
   deleteUserValidation,
   deleteUserId
 )
-router.post('/update/user', updateDataUserValidation, updateData)
-router.post('/update/password/', updatePasswordValidation, updatePassword)
+router.post(
+  '/update/user/',
+  isAuthenticated,
+  updateDataUserValidation,
+  updateData
+)
+router.post(
+  '/update/password/',
+  isAuthenticated,
+  updatePasswordValidation,
+  updatePassword
+)
 
 module.exports = router

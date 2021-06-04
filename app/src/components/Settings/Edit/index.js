@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import Joi from 'joi'
 
@@ -8,20 +7,13 @@ import './styles.css'
 
 import instance from '../../../axios'
 import validate from '../../../utils/validate'
-
 import { updateUser } from '../../../actions/user.actions'
 import { resetUser } from '../../../actions/user.actions'
 
 function EditComponent() {
   const user = useSelector((state) => state.user)
   const dispatch = useDispatch()
-  const history = useHistory()
   const [, setCookie] = useCookies([])
-
-  if (user.account) {
-  } else {
-    console.log('out here')
-  }
 
   const nameSchema = Joi.object({
     name: Joi.string().min(3).required(),
@@ -68,7 +60,7 @@ function EditComponent() {
       document.querySelector('.modal').classList.add('show')
 
       instance
-        .post('/user/update', {
+        .post('/user/update/', {
           name: data.name,
           email: data.email,
           username: data.password,
@@ -130,7 +122,7 @@ function EditComponent() {
                   : 'container-input'
               }
               placeholder="Nombre"
-              defaultValue={user.name || 'Santiago Gómez Solarte'}
+              defaultValue={user.name}
               onChange={handleOnChange}
               onBlur={(e) => {
                 const result = validate(
@@ -161,7 +153,7 @@ function EditComponent() {
                   : 'container-input'
               }
               placeholder="Correo electrónico"
-              defaultValue={user.email || 'santiagogomezsolarte@gmail.com'}
+              defaultValue={user.email}
               onChange={handleOnChange}
               onBlur={(e) => {
                 const result = validate(
@@ -192,7 +184,7 @@ function EditComponent() {
                   : 'container-input'
               }
               placeholder="Nombre de usuario"
-              defaultValue={user.username || 'santiagogomezsolarte'}
+              defaultValue={user.username}
               onChange={handleOnChange}
               onBlur={(e) => {
                 const result = validate(

@@ -22,15 +22,7 @@ function Account() {
           </div>
         </div>
       ) : (
-        <div className="main-item main-account">
-          <span className="main-account-avatar">S</span>
-          <div className="main-account-info">
-            <div className="main-account-info-name">Santiago Gómez Solarte</div>
-            <Link to="/account">Account</Link>
-            <br />
-            <Link to="/settings">Settings</Link>
-          </div>
-        </div>
+        <></>
       )}
     </>
   )

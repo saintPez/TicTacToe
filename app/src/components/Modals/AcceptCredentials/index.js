@@ -16,8 +16,6 @@ function AcceptCredentials() {
     })
   }
 
-  const passwordTest = 'lenuxinc2015' || user.password
-
   const handleSuccess = () => {
     document.querySelector('div.modal[type=modal]').classList.remove('show')
     document.querySelector('div.modal[type=modal]').classList.add('hide')
@@ -29,7 +27,7 @@ function AcceptCredentials() {
     e.preventDefault()
     !data.passwordCredentials
       ? console.log('Error')
-      : data.passwordCredentials === passwordTest
+      : data.passwordCredentials === user.password
       ? handleSuccess()
       : console.log(false)
   }
