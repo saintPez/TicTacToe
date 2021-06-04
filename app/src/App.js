@@ -16,6 +16,10 @@ import User from './pages/User/'
 import TicTacToe from './components/TicTacToe'
 import Account from './components/Account'
 import Chat from './components/Chat'
+import MenuSettingsComponent from './components/Settings'
+import EditComponent from './components/Settings/Edit'
+import PasswordComponent from './components/Settings/Password'
+import AcceptCredentials from './components/Modals/AcceptCredentials'
 
 function App() {
   return (
@@ -23,6 +27,7 @@ function App() {
       <Header />
       <Switch>
         <Redirect exact from="/" to="/home" />
+        <Redirect exact from="/settings" to="/settings/edit" />
         <Route path="/signIn">
           <SignIn />
         </Route>
@@ -31,6 +36,25 @@ function App() {
         </Route>
         <Route path="/forgot-password">
           <ForgotPassword />
+        </Route>
+        <Route path="/settings">
+          <main className="main main-s">
+            <div className="main-column-left">
+              <MenuSettingsComponent />
+            </div>
+            <div className="main-column-center">
+              <Route path="/settings/edit">
+                <EditComponent />
+              </Route>
+              <Route path="/settings/password">
+                <PasswordComponent />
+              </Route>
+            </div>
+            <div className="main-column-right">
+              <Account />
+            </div>
+          </main>
+          <AcceptCredentials />
         </Route>
 
         <Route>

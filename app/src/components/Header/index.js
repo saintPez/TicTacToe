@@ -96,11 +96,30 @@ function Header() {
         </>
       ) : (
         <>
-          <Link to="/signIn" className="header-item header-item-left">
+          <Link
+            to={`/user/santiagogomezsolarte`}
+            className="header-item header-item-left"
+          >
+            <span className="header-item-icon header-item-avatar">S</span>
+            <span className="header-item-text">
+              Santiago Gómez Solarte (10)
+            </span>
+          </Link>
+
+          <a href="#user" className="header-item">
+            <HashtagIcon className="header-item-icon" />
+            <span className="header-item-text">Play</span>
+          </a>
+          <a href="#user" className="header-item header-item-right">
+            <BookOpenIcon className="header-item-icon" />
+            <span className="header-item-text">Games</span>
+          </a>
+
+          <Link to="/signIn" className="header-item header-item-left d-none">
             <UserIcon className="header-item-icon" />
             <span className="header-item-text">Sign In</span>
           </Link>
-          <Link to="/signUp" className="header-item header-item-right">
+          <Link to="/signUp" className="header-item header-item-right d-none">
             <UserAddIcon className="header-item-icon" />
             <span className="header-item-text">Sign Up</span>
           </Link>

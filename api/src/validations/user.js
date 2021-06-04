@@ -17,6 +17,16 @@ const updateUserSchema = Joi.object({
   password: Joi.string().min(5).required(),
 })
 
+const updateUserDataSchema = Joi.object({
+  username: Joi.string().min(3).max(22).optional(),
+  name: Joi.string().min(3).max(22).optional(),
+  email: Joi.string().email().optional(),
+})
+
+const updatePasswordSchema = Joi.object({
+  password: Joi.string().min(5).required(),
+})
+
 const deleteUserIdSchema = Joi.object({
   id: Joi.string().min(24).max(24).required(),
 })
@@ -31,4 +41,6 @@ module.exports = {
   updateUserSchema,
   deleteUserIdSchema,
   deleteUserSchema,
+  updateUserDataSchema,
+  updatePasswordSchema,
 }
