@@ -22,6 +22,7 @@ import Games from './pages/Games/'
 import PlayOffline from './pages/PlayOffline/'
 import AccountEdit from './pages/Account/Edit/'
 import AccountPassword from './pages/Account/Password/'
+import LogOut from './pages/LogOut/'
 
 import TicTacToe from './components/TicTacToe'
 import Account from './components/Account'
@@ -114,6 +115,9 @@ function App() {
                 </Route>
                 <Route path="/play/offline">
                   <PlayOffline />
+                </Route>
+                <Route path="/logOut">
+                  <LogOut />
                 </Route>
               </div>
               <div className="main-column-right">

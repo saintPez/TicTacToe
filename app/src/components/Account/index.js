@@ -16,7 +16,7 @@ function Account() {
             <div className="main-account-info-name">{user.name}</div>
             <Link to="/account">Account</Link>
             <br />
-            <Link to="/settings">Settings</Link>
+            <Link to="/logOut">Log out</Link>
           </div>
         </div>
       ) : (
