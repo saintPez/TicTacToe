@@ -20,14 +20,13 @@ import PlayOnlineGame from './pages/PlayOnlineGame/'
 import Game from './pages/Game/'
 import Games from './pages/Games/'
 import PlayOffline from './pages/PlayOffline/'
+import AccountEdit from './pages/Account/Edit/'
+import AccountPassword from './pages/Account/Password/'
 
 import TicTacToe from './components/TicTacToe'
 import Account from './components/Account'
 import Chat from './components/Chat'
-import MenuSettingsComponent from './components/Settings'
-import EditComponent from './components/Settings/Edit'
-import PasswordComponent from './components/Settings/Password'
-import AcceptCredentials from './components/Modals/AcceptCredentials'
+import AccountOptions from './components/AccountOptions'
 
 function App() {
   return (
@@ -46,24 +45,26 @@ function App() {
           <ForgotPassword />
         </Route>
 
-        <Route path="/settings">
-          <main className="main main-s">
+        <Redirect exact from="/account" to="/account/edit" />
+        <Route path="/account">
+          <main className="main">
             <div className="main-column-left">
-              <MenuSettingsComponent />
+              <AccountOptions />
             </div>
             <div className="main-column-center">
-              <Route path="/settings/edit">
-                <EditComponent />
+              <Route path="/account/edit">
+                <AccountEdit />
               </Route>
-              <Route path="/settings/password">
-                <PasswordComponent />
+              <Route path="/account/password">
+                <AccountPassword />
               </Route>
             </div>
             <div className="main-column-right">
               <Account />
+              <Chat />
             </div>
           </main>
-          <AcceptCredentials />
+          {/* <AcceptCredentials /> */}
         </Route>
 
         {/* <Route path="/play">
@@ -82,7 +83,6 @@ function App() {
             <div className="main-column-left">
               <TicTacToe />
             </div>
-
             <Route>
               <div className="main-column-center">
                 <Route path="/home">

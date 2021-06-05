@@ -1,0 +1,28 @@
+.account-options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.account-options-item:first-child {
+  border-radius: 20px 20px 0 0;
+}
+
+.account-options-item:last-child {
+  border-radius: 0 0 20px 20px;
+}
+
+.account-options-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: #272522;
+  padding: 20px;
+  font-size: 19px;
+}
+
+.account-options-item:hover {
+  background-color: #1f1e1b;
+}

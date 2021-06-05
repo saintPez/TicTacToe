@@ -11,8 +11,6 @@ const {
   updateUserSchema,
   deleteUserIdSchema,
   deleteUserSchema,
-  updatePasswordSchema,
-  updateUserDataSchema,
 } = require('../validations/user')
 
 const {
@@ -124,46 +122,6 @@ const deleteUserId = async (req, res, next) => {
   }
 }
 
-//Update data
-
-const updateDataUserValidation = validate.body(updateUserDataSchema)
-
-const updateData = async (req, res, next) => {
-  try {
-    const name = req.body.name
-    const email = req.body.email
-    const username = req.body.username
-
-    const emailCheck = await User.findOne({ email: email })
-
-    if (emailCheck)
-      return next(createError(409, 'Email is already in use', { expose: true }))
-
-    await User.updateOne(
-      { __id: req.user },
-      { name: name, email: email, username: username }
-    )
-
-    res.status(200).json({ success: true })
-  } catch (error) {
-    next(createError(500, 'Something has gone wrong', { expose: true }))
-  }
-}
-
-//Update password
-
-const updatePasswordValidation = validate.body(updatePasswordSchema)
-
-const updatePassword = async (req, res, next) => {
-  try {
-    const salt = await bcrypt.genSalt(10)
-    const password = await bcrypt.hash(req.body.password, salt)
-    await User.updateOne({ _id: req.user }, { password })
-  } catch (error) {
-    next(createError(500, 'Something has gone wrong', { expose: true }))
-  }
-}
-
 module.exports = {
   getUser,
   getUserIdValidation,
@@ -174,8 +132,4 @@ module.exports = {
   deleteUserIdValidation,
   deleteUserValidation,
   deleteUserId,
-  updateDataUserValidation,
-  updateData,
-  updatePasswordValidation,
-  updatePassword,
 }

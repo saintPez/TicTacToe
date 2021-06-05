@@ -11,10 +11,6 @@ const {
   deleteUserIdValidation,
   deleteUserValidation,
   deleteUserId,
-  updateDataUserValidation,
-  updateData,
-  updatePasswordValidation,
-  updatePassword,
 } = require('../controllers/user')
 
 const router = Router()
@@ -34,18 +30,6 @@ router.delete(
   deleteUserIdValidation,
   deleteUserValidation,
   deleteUserId
-)
-router.post(
-  '/update/user/',
-  isAuthenticated,
-  updateDataUserValidation,
-  updateData
-)
-router.post(
-  '/update/password/',
-  isAuthenticated,
-  updatePasswordValidation,
-  updatePassword
 )
 
 module.exports = router
