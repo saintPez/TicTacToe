@@ -20,10 +20,15 @@ import PlayOnlineGame from './pages/PlayOnlineGame/'
 import Game from './pages/Game/'
 import Games from './pages/Games/'
 import PlayOffline from './pages/PlayOffline/'
+import AccountEdit from './pages/Account/Edit/'
+import AccountPassword from './pages/Account/Password/'
+import LogOut from './pages/LogOut/'
+import PlayOnline from './pages/PlayOnline/'
 
 import TicTacToe from './components/TicTacToe'
 import Account from './components/Account'
 import Chat from './components/Chat'
+import AccountOptions from './components/AccountOptions'
 
 function App() {
   return (
@@ -31,6 +36,7 @@ function App() {
       <Header />
       <Switch>
         <Redirect exact from="/" to="/home" />
+        <Redirect exact from="/settings" to="/settings/edit" />
         <Route path="/signIn">
           <SignIn />
         </Route>
@@ -40,6 +46,29 @@ function App() {
         <Route path="/forgot-password">
           <ForgotPassword />
         </Route>
+
+        <Redirect exact from="/account" to="/account/edit" />
+        <Route path="/account">
+          <main className="main">
+            <div className="main-column-left">
+              <AccountOptions />
+            </div>
+            <div className="main-column-center">
+              <Route path="/account/edit">
+                <AccountEdit />
+              </Route>
+              <Route path="/account/password">
+                <AccountPassword />
+              </Route>
+            </div>
+            <div className="main-column-right">
+              <Account />
+              <Chat />
+            </div>
+          </main>
+          {/* <AcceptCredentials /> */}
+        </Route>
+
         {/* <Route path="/play">
           <main className="main">
             <div className="main-column-left">
@@ -56,7 +85,6 @@ function App() {
             <div className="main-column-left">
               <TicTacToe />
             </div>
-
             <Route>
               <div className="main-column-center">
                 <Route path="/home">
@@ -67,6 +95,9 @@ function App() {
                 </Route>
                 <Route exact path="/play">
                   <Play />
+                </Route>
+                <Route exact path="/play/online">
+                  <PlayOnline />
                 </Route>
                 <Route path="/play/online/:id">
                   <PlayOnlineGame />
@@ -88,6 +119,9 @@ function App() {
                 </Route>
                 <Route path="/play/offline">
                   <PlayOffline />
+                </Route>
+                <Route path="/logOut">
+                  <LogOut />
                 </Route>
               </div>
               <div className="main-column-right">

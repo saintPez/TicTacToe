@@ -2,6 +2,7 @@ const { config } = require('dotenv')
 config()
 
 const jwt = require('jsonwebtoken')
+const { v4: uuidv4 } = require('uuid')
 
 const app = require('./app')
 
@@ -27,15 +28,6 @@ connection()
 const server = app.listen(PORT, async () => {
   console.log(`Info: Server running on port ${PORT}`)
 })
-
-//Vars settings
-
-// const updateInterval = parseInt(process.env.UPDATE_INTERVAL)
-// const minRoomSize = parseInt(process.env.MIN_ROOM_SIZE)
-//const maxRank = parseInt(process.env.MAX_RANK)
-//const rankInterval = parseInt(process.env.RANK_INTERVAL)
-//const rankChecks = generateIntervalObject(maxRank, rankInterval)
-// const gameServer = process.env.GAME_SERVER_URI
 
 // Sockets
 
@@ -70,39 +62,6 @@ io.on('connection', (socket) => {
   socket.on('chat-global', ({ message }) => {
     socket.broadcast.emit('chat-global', { message, user: socket.user?.name })
   })
-
-  // socket.on('new-room', (room) => {
-  //   const rooms = getRooms()
-  //   if (!socket.user) return
-  //   if (rooms[room.id]) {
-  //     socket.join(room.id)
-  //     rooms[room.id].users[socket.user.id] = {
-  //       name: socket.user.name,
-  //       socket: socket.id,
-  //     }
-  //     socket.room = room.id
-  //   } else {
-  //     const uuid = uuidv4()
-  //     socket.join(uuid)
-  //     rooms[uuid] = {}
-  //     rooms[uuid].config = room.config
-  //     rooms[uuid].users[socket.user.id] = {
-  //       name: socket.user.name,
-  //       socket: socket.id,
-  //     }
-  //     socket.room = uuid
-  //   }
-
-  //   io.in(socket.room).emit('room', {
-  //     id: socket.room,
-  //     config: rooms[socket.room].config,
-  //     users: rooms[socket.room].users,
-  //   })
-
-  //   setRooms(rooms)
-
-  //   socket.broadcast.emit('get-list-rooms', rooms)
-  // })
 
   socket.on('join', async (roomId) => {
     try {
@@ -467,48 +426,68 @@ io.on('connection', (socket) => {
     }
   })
 
-  /*socket.on('check-in', (user) => {
-    socketIds[user] = socket.id
-  })
+  socket.on('queue', async () => {
+    let queue = await lowdb().get('queue').value()
+    const result = queue.sort((a, b) => {
+      if (a.score < b.score) return -1
+      if (a.score > b.score) return 1
+      return 0
+    })
 
-  socket.on('request-greet', (userId) => {
-    console.log('queue: ', queue)
-    console.log(userId)
-  })
+    for (let i = 0; i < result.length; i = i + 2) {
+      if (result[i + 1]) {
+        const uuid = uuidv4()
+        await lowdb()
+          .get('rooms')
+          .push({
+            id: uuid,
+            config: {
+              width: 10,
+              height: 10,
+              consecutive: 5,
+              players: 2,
+              inverted: false,
+              password: null,
+            },
+            users: [],
+          })
+          .write()
 
-  socket.on('check-users', () => {
-    console.log('\n\nqueue: ', queue)
-  })
+        if (
+          `${socket.id}` === `${result[i]?.socket}` ||
+          `${socket.id}` === `${result[i + 1]?.socket}`
+        ) {
+          socket.emit('queue', { id: uuid })
+        }
 
-  socket.on('accept-match', (userId) => {
-    const roomId = findRoomId(userId)
-    const userIndex = findUserIndexInRoom(userId, roomId)
-
-    socket.join(roomId)
-    const currentRoom = rooms[roomId]
-
-    currentRoom[userIndex].hasAccepted = true
-
-    // If all the clients accept the request, send them to the room
-    if (
-      !currentRoom.map((userInRoom) => userInRoom.hasAccepted).includes(false)
-    ) {
-      createNewRoom(currentRoom)
-        .then((res) => {
-          console.log(res)
-          console.log('New room created')
-          io.in(roomId).emit('match-accepted', currentRoom)
-          delete rooms[roomId]
-
-          io.socketsLeave(roomId)
+        socket.to(`${result[i]?.socket}`).emit('queue', {
+          id: uuid,
         })
-        .catch(() => {
-          console.log('Error creating the game')
-          const _ = undefined
-          errorMatchActions(roomId, _, currentRoom, 'GameServerError')
+
+        socket.to(`${result[i + 1]?.socket}`).emit('queue', {
+          id: uuid,
         })
+
+        queue.splice(
+          queue.findIndex((user) => `${user.id}` === `${result[i]?.id}`),
+          1
+        )
+
+        queue.splice(
+          queue.findIndex((user) => `${user.id}` === `${result[i + 1]?.id}`),
+          1
+        )
+      }
     }
-  })*/
+
+    await lowdb().get('queue').assign(queue).write()
+  })
+
+  socket.on('leave-queue', async () => {
+    await lowdb().get('queue').remove({ id: socket.user?.id }).write()
+
+    socket.emit('leave-queue', { success: true })
+  })
 
   socket.on('disconnect', async () => {
     try {
@@ -615,101 +594,23 @@ const leaveRoom = async (socket) => {
         (_user) => `${_user.id}` == `${socket.user?.id}`
       )
       room.users.splice(index, 1)
-      await lowdb().get('rooms').assign({ users: room.users }).write()
+
+      for (const user of room.users) {
+        socket.to(`${user.socket}`).emit('room', {
+          id: room.id,
+          users: room.users,
+          config: room.config,
+        })
+      }
+
+      await lowdb()
+        .get('rooms')
+        .find({ id: `${room.id}` })
+        .assign({ users: room.users })
+        .write()
     }
   }
 }
-
-/*setInterval(() => {
-  // rankChecks.forEach(singleRange => {
-  //   checkIfMatch(singleRange.min, singleRange.max)
-  // })
-  checkIfMatch(0, 1000)
-}, updateInterval)
-
-const checkIfMatch = (min, max) => {
-  const matchedUsers = queue
-    .filter((singleUser) => singleUser.rank >= min && singleUser.rank <= max)
-    .slice(0, minRoomSize)
-
-  if (matchedUsers.length >= minRoomSize) {
-    const newRoomId = Math.random().toString(16).substr(2, 15)
-    rooms[newRoomId] = []
-    console.log('NEW ROOM ID', newRoomId)
-    matchedUsers.forEach((singleUser) => {
-      sendUniqueResponse(socketIds[singleUser.id], 'matched')
-      const newUserToRoom = {
-        ...singleUser,
-        hasAccepted: false,
-      }
-      rooms[newRoomId].push(newUserToRoom)
-      queue = queue.filter((queueUser) => queueUser.id !== singleUser.id)
-    })
-  }
-}
-
-const sendUniqueResponse = (id, emitId, message) => {
-  io.sockets.to(id).emit(emitId, message)
-}*/
-
-/* const joinUniqueClient = (id, roomName) => {
-  io.sockets.to(id).join(roomName)
-} */
-
-/*const findRoomId = (userId) => {
-  const roomsValues = Object.values(rooms)
-  const singleLevelValues = roomsValues.map((singleRoomValue) =>
-    singleRoomValue.map((singleObjectInsideRoom) => singleObjectInsideRoom.id)
-  )
-  const roomIndex = singleLevelValues.findIndex((roomMembers) =>
-    roomMembers.includes(userId)
-  )
-  const roomId = Object.keys(rooms)[roomIndex]
-  return roomId
-}
-
-const findUserIndexInRoom = (userId, roomId) => {
-  const userIndex = rooms[roomId].findIndex(
-    (userInRoom) => userInRoom.id === userId
-  )
-
-  return userIndex
-}
-
-const errorMatchActions = (roomId, user, currentRoom, rejectionType) => {
-  // We emit one player rejects to all who are in the provisional room (joined or not)
-  const actionsHashMap = {
-    MatchRejected: () => {
-      Object.values(currentRoom).forEach((singleUser) => {
-        if (singleUser.id !== user.id) {
-          io.to(socketIds[singleUser.id]).emit('match-canceled', rejectionType)
-
-          // Place back the users who didn't declined the match
-          queue.push(singleUser)
-        }
-      })
-    },
-
-    GameServerError: () => {
-      Object.values(currentRoom).forEach((singleAffectedUser) => {
-        io.to(socketIds[singleAffectedUser.id]).emit(
-          'match-canceled',
-          rejectionType
-        )
-      })
-    },
-  }
-
-  actionsHashMap[rejectionType]()
-  // Then we can delete the provisional room and delete the user who declined the match from the queue
-  delete rooms[roomId]
-}
-
-const createNewRoom = async () => {
-  // return await axios.post(`${gameServer}/room`, {
-  //   users: users,
-  // })
-}*/
 
 const checkWin = (x, y, consecutive, history, width, height, mark) => {
   let consecutive_mark = 0

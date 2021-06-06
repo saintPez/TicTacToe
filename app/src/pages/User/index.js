@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useParams, useHistory, Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
+import { DateTime } from 'luxon'
+
 import LoadingSpin from '../../components/LoadingSpin'
 
 import { CalendarIcon } from '@heroicons/react/solid'
@@ -17,7 +19,6 @@ function User() {
   const { id } = useParams()
   const _user = useSelector((state) => state.user)
   const [user, setUser] = useState({})
-  const [isGames, setIsGames] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -63,11 +64,17 @@ function User() {
               <div className="user-body-info">
                 <div className="user-body-info-item">
                   <CalendarIcon className="user-body-info-item-icon" />
-                  <div className="user-body-info-item-data">19/05/2021</div>
+                  <div className="user-body-info-item-data">
+                    {`${DateTime.fromISO(user.createdAt).toFormat(
+                      'MM/dd/yyyy'
+                    )}`}
+                  </div>
                 </div>
                 <div className="user-body-info-item">
                   <HeartIcon className="user-body-info-item-icon" />
-                  <div className="user-body-info-item-data">{user.score}</div>
+                  <div className="user-body-info-item-data">
+                    {user.games.filter((game) => game.result === true).length}
+                  </div>
                 </div>
                 <div className="user-body-info-item user-body-info-item-third">
                   <HashtagIcon className="user-body-info-item-icon" />
@@ -76,58 +83,34 @@ function User() {
               </div>
             </div>
           </div>
-          <div className="main-item-user-menu user-menu">
-            <a
-              href="#notes"
-              onClick={() => {
-                setIsGames(false)
-              }}
-              className="user-menu-item user-menu-item-left"
-            >
-              Notes
-            </a>
-            <a
-              href="#games"
-              onClick={() => {
-                setIsGames(true)
-              }}
-              className="user-menu-item user-menu-item-right"
-            >
-              Games
-            </a>
-          </div>
 
           <div className="main-item">
-            {isGames ? (
-              <table className="rooms-table">
-                <thead>
-                  <tr>
-                    <th>id</th>
-                    <th>win</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {user.games
-                    .map((game) => (
-                      <tr key={game.data}>
-                        <td>
-                          <Link to={`/game/${game.data}`}>{game.data}</Link>
-                        </td>
-                        <td>
-                          <Link to={`/game/${game.data}`}>
-                            {`${game.result}` === 'undefined'
-                              ? ''
-                              : `${game.result}`}
-                          </Link>
-                        </td>
-                      </tr>
-                    ))
-                    .reverse()}
-                </tbody>
-              </table>
-            ) : (
-              <></>
-            )}
+            <table className="rooms-table">
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>win</th>
+                </tr>
+              </thead>
+              <tbody>
+                {user.games
+                  .map((game) => (
+                    <tr key={game.data}>
+                      <td>
+                        <Link to={`/game/${game.data}`}>{game.data}</Link>
+                      </td>
+                      <td>
+                        <Link to={`/game/${game.data}`}>
+                          {`${game.result}` === 'undefined'
+                            ? ''
+                            : `${game.result}`}
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                  .reverse()}
+              </tbody>
+            </table>
           </div>
         </>
       )}
