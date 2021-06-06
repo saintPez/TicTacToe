@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+
+import { updateUser } from '../../actions/user.actions'
 
 import LoadingSpin from '../../components/LoadingSpin'
 
@@ -11,6 +13,7 @@ function PlayOnline() {
   const history = useHistory()
   const user = useSelector((state) => state.user)
   const [isLoading, setIsLoading] = useState(true)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (!user.account) history.push('/home')
@@ -20,6 +23,7 @@ function PlayOnline() {
       .post(`/socket/queue?socket=${user.socketId}`)
       .then((response) => {
         socket.emit('queue')
+        dispatch(updateUser({ queue: true }))
       })
       .catch((error) => {
         history.push('/home')

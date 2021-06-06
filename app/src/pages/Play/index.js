@@ -52,7 +52,7 @@ function Play() {
                 <div>
                   <div className="play-item-title">Online</div>
                   <div className="play-item-description">
-                    Lorem ipsum dolor sit amet
+                    Play against a person with the same score as yourself
                   </div>
                 </div>
               </Link>
@@ -61,7 +61,7 @@ function Play() {
                 <div>
                   <div className="play-item-title">Multiplayer</div>
                   <div className="play-item-description">
-                    Lorem ipsum dolor sit amet
+                    (Offline) Play with another person from the same device
                   </div>
                 </div>
               </Link>
@@ -70,7 +70,7 @@ function Play() {
                 <div>
                   <div className="play-item-title">Rooms</div>
                   <div className="play-item-description">
-                    Lorem ipsum dolor sit amet
+                    Create games with a customized configuration
                   </div>
                 </div>
               </Link>

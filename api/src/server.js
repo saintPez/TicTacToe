@@ -483,6 +483,12 @@ io.on('connection', (socket) => {
     await lowdb().get('queue').assign(queue).write()
   })
 
+  socket.on('leave-queue', async () => {
+    await lowdb().get('queue').remove({ id: socket.user?.id }).write()
+
+    socket.emit('leave-queue', { success: true })
+  })
+
   socket.on('disconnect', async () => {
     try {
       // Users
