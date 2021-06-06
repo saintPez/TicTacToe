@@ -22,16 +22,57 @@ function Games() {
         setIsLoading(false)
       })
       .catch((error) => {
-        history.push('/')
+        //history.push('/')
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  /*into main item loading -> <LoadingSpin /> */
+
   return (
     <>
       {isLoading ? (
-        <div className="main-item loading">
-          <LoadingSpin />
+        <div className="main-item">
+          <table className="rooms-table">
+            <thead>
+              <tr>
+                <th>Players</th>
+                <th>Board</th>
+                <th>Consecutive</th>
+                <th>Inverted</th>
+                <th>Win</th>
+              </tr>
+            </thead>
+            <tbody>
+              {games.map((game) => (
+                <tr key={game._id}>
+                  <td>
+                    <Link to={`/game/${game._id}`}>{game.players.length}</Link>
+                  </td>
+                  <td>
+                    <Link
+                      to={`/game/${game._id}`}
+                    >{`${game.board.width}x${game.board.height}`}</Link>
+                  </td>
+                  <td>
+                    <Link to={`/game/${game._id}`}>
+                      {game.board.consecutive}
+                    </Link>
+                  </td>
+                  <td>
+                    <Link
+                      to={`/game/${game._id}`}
+                    >{`${game.board.inverted}`}</Link>
+                  </td>
+                  <td>
+                    <Link to={`/game/${game._id}`}>
+                      {`${game.result}` === 'undefined' ? '' : `${game.result}`}
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ) : (
         <div className="main-item">

@@ -1,3 +1,9 @@
+:root {
+  --select-border: #777;
+  --select-focus: blue;
+  --select-arrow: var(--select-border);
+}
+
 body {
   background-color: #312e2b;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
