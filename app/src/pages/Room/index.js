@@ -20,7 +20,6 @@ function Room() {
   useEffect(() => {
     if (user.room) history.push('/leave')
     if (!user.socket) return history.push('/')
-    if (user.room) return history.push('/')
     socket.emit('join', id)
     socket.once('join', (response) => {
       console.log('join', response)

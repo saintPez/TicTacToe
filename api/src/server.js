@@ -2,6 +2,7 @@ const { config } = require('dotenv')
 config()
 
 const jwt = require('jsonwebtoken')
+const { v4: uuidv4 } = require('uuid')
 
 const app = require('./app')
 
@@ -70,39 +71,6 @@ io.on('connection', (socket) => {
   socket.on('chat-global', ({ message }) => {
     socket.broadcast.emit('chat-global', { message, user: socket.user?.name })
   })
-
-  // socket.on('new-room', (room) => {
-  //   const rooms = getRooms()
-  //   if (!socket.user) return
-  //   if (rooms[room.id]) {
-  //     socket.join(room.id)
-  //     rooms[room.id].users[socket.user.id] = {
-  //       name: socket.user.name,
-  //       socket: socket.id,
-  //     }
-  //     socket.room = room.id
-  //   } else {
-  //     const uuid = uuidv4()
-  //     socket.join(uuid)
-  //     rooms[uuid] = {}
-  //     rooms[uuid].config = room.config
-  //     rooms[uuid].users[socket.user.id] = {
-  //       name: socket.user.name,
-  //       socket: socket.id,
-  //     }
-  //     socket.room = uuid
-  //   }
-
-  //   io.in(socket.room).emit('room', {
-  //     id: socket.room,
-  //     config: rooms[socket.room].config,
-  //     users: rooms[socket.room].users,
-  //   })
-
-  //   setRooms(rooms)
-
-  //   socket.broadcast.emit('get-list-rooms', rooms)
-  // })
 
   socket.on('join', async (roomId) => {
     try {
@@ -467,6 +435,63 @@ io.on('connection', (socket) => {
     }
   })
 
+  socket.on('queue', async () => {
+    let queue = await lowdb().get('queue').value()
+    const result = queue.sort((a, b) => {
+      if (a.score < b.score) return -1
+      if (a.score > b.score) return 1
+      return 0
+    })
+
+    for (let i = 0; i < result.length; i = i + 2) {
+      if (result[i + 1]) {
+        const uuid = uuidv4()
+        await lowdb()
+          .get('rooms')
+          .push({
+            id: uuid,
+            config: {
+              width: 10,
+              height: 10,
+              consecutive: 5,
+              players: 2,
+              inverted: false,
+              password: null,
+            },
+            users: [],
+          })
+          .write()
+
+        if (
+          `${socket.id}` === `${result[i]?.socket}` ||
+          `${socket.id}` === `${result[i + 1]?.socket}`
+        ) {
+          socket.emit('queue', { id: uuid })
+        }
+
+        socket.to(`${result[i]?.socket}`).emit('queue', {
+          id: uuid,
+        })
+
+        socket.to(`${result[i + 1]?.socket}`).emit('queue', {
+          id: uuid,
+        })
+
+        queue.splice(
+          queue.findIndex((user) => `${user.id}` === `${result[i]?.id}`),
+          1
+        )
+
+        queue.splice(
+          queue.findIndex((user) => `${user.id}` === `${result[i + 1]?.id}`),
+          1
+        )
+      }
+    }
+
+    await lowdb().get('queue').assign(queue).write()
+  })
+
   /*socket.on('check-in', (user) => {
     socketIds[user] = socket.id
   })
@@ -615,7 +640,20 @@ const leaveRoom = async (socket) => {
         (_user) => `${_user.id}` == `${socket.user?.id}`
       )
       room.users.splice(index, 1)
-      await lowdb().get('rooms').assign({ users: room.users }).write()
+
+      for (const user of room.users) {
+        socket.to(`${user.socket}`).emit('room', {
+          id: room.id,
+          users: room.users,
+          config: room.config,
+        })
+      }
+
+      await lowdb()
+        .get('rooms')
+        .find({ id: `${room.id}` })
+        .assign({ users: room.users })
+        .write()
     }
   }
 }

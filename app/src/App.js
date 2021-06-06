@@ -23,6 +23,7 @@ import PlayOffline from './pages/PlayOffline/'
 import AccountEdit from './pages/Account/Edit/'
 import AccountPassword from './pages/Account/Password/'
 import LogOut from './pages/LogOut/'
+import PlayOnline from './pages/PlayOnline/'
 
 import TicTacToe from './components/TicTacToe'
 import Account from './components/Account'
@@ -94,6 +95,9 @@ function App() {
                 </Route>
                 <Route exact path="/play">
                   <Play />
+                </Route>
+                <Route exact path="/play/online">
+                  <PlayOnline />
                 </Route>
                 <Route path="/play/online/:id">
                   <PlayOnlineGame />
