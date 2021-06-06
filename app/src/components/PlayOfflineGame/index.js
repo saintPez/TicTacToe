@@ -34,7 +34,7 @@ function PlayOfflineGame({ config }) {
     if (win) {
       setGame({ ...game, history, finished: true, win: marks[turn] })
     } else if (config.width * config.height === history.length) {
-      setGame({ ...game, history, finished: true, win: marks[turn] })
+      setGame({ ...game, history, finished: true })
     } else {
       turn++
       if (turn >= config.players) turn = 0
@@ -54,7 +54,7 @@ function PlayOfflineGame({ config }) {
           />
         </div>
 
-        {game.finished ? (
+        {game.win ? (
           config.inverted ? (
             <div>
               <div>Lose</div>
