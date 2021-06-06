@@ -112,7 +112,7 @@ function Header() {
           <Link to={`/Games`} className="header-item header-item-right">
             <BookOpenIcon className="header-item-icon" />
             <span className="header-item-text">Games</span>
-            </Link>
+          </Link>
         </>
       ) : (
         <>
