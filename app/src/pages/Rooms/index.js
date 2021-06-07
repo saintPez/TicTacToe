@@ -30,8 +30,8 @@ function Rooms() {
   */
 
   useEffect(() => {
-    if (user.room) history.push('/leave')
-    if (!user.socket) history.push('/home')
+    //if (user.room) history.push('/leave')
+    //if (!user.socket) history.push('/home')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -71,24 +71,27 @@ function Rooms() {
             <h1 className="numberX">{`${config.width}x${config.height}`}</h1>
             <SelectComponent
               text="Consecutive"
-              options={[1, 2, 3, 4, 5, 6]}
-              onClick={(e) => {
+              options={[3, 4, 5, 6]}
+              className="display-select"
+              chooseOption={(e) => {
                 setConfig({
                   ...config,
-                  consecutive: parseInt(e.target.value),
+                  consecutive: parseInt(e.target.textContent),
                 })
-                console.log(config.consecutive)
+                //console.log(config.consecutive)
               }}
-              className="display-select"
             />
             <SelectComponent
               text="Players"
               options={[2, 3, 4]}
-              onClick={(e) => {
-                setConfig({ ...config, players: parseInt(e.target.value) })
-                console.log(config.players)
-              }}
               className="display-select"
+              chooseOption={(e) => {
+                setConfig({
+                  ...config,
+                  players: parseInt(e.target.textContent),
+                })
+                //console.log(config.players)
+              }}
             />
             <span className="label-div p">Inverted</span>
             <label className="switch">

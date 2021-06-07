@@ -8,6 +8,15 @@ function CreateTable({ config, setConfig }) {
   const [active, setActive] = useState({})
 
   useEffect(() => {
+    const box = document.querySelector('.rooms-create-table-item')
+
+    const buttons = document.getElementsByClassName('rooms-create-table-item')
+
+    for (const button of buttons) {
+      button.style.height = `${box.offsetWidth}px`
+      button.style.fontSize = `${box.offsetWidth}px`
+    }
+
     handlerClick(config.width, config.height)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -42,12 +51,6 @@ function CreateTable({ config, setConfig }) {
             }}
             active={active[`${a}x${i}`] ? true : false}
           />
-          // <button
-          //   id={`${i + 1}x${a + 1}`}
-          //   className="rooms-create-table-item"
-          //   disabled={i < 4 && a < 4 && !(i === 3 && a === 3) ? true : false}
-          //   // autoFocus={i === 2 && i === 2 ? true : false}
-          // >{` `}</button>
         )
       }
     }

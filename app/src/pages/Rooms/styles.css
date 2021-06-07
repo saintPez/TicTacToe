@@ -159,23 +159,9 @@ input:checked + .slider:before {
   margin-top: 10px;
 }
 
-@media only screen and (max-width: 1000px) {
-  .options-tools {
-    width: 100%;
-    display: block;
-  }
-
-  .select,
-  select {
-    width: 100%;
-  }
-
+@media (max-width: 460px) {
   .rooms-create {
-    width: auto;
-  }
-
-  .rooms-create-table-item {
-    width: 44px;
-    height: 44px;
+    display: flex;
+    flex-wrap: wrap;
   }
 }
