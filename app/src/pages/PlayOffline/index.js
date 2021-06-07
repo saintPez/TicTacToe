@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 
 import CreateTable from '../../components/CreateTable'
 import PlayOfflineGame from '../../components/PlayOfflineGame'
+import SelectComponent from '../../components/Models/Select'
 
 function PlayOffline() {
   const history = useHistory()
@@ -28,52 +29,44 @@ function PlayOffline() {
         <PlayOfflineGame config={config} />
       ) : (
         <div className="main-item">
-          <div className="board-create">
+          <div className="rooms-create">
             <CreateTable config={config} setConfig={setConfig} />
-            <div>
-              <h1>{`${config.width}x${config.height}`}</h1>
-              <div>Consecutive</div>
-              <select
-                name="consecutive"
-                value={config.consecutive}
-                onChange={(e) => {
+            <div className="options-tools">
+              <h1 className="numberX">{`${config.width}x${config.height}`}</h1>
+              <SelectComponent
+                text="Consecutive"
+                options={[3, 4, 5, 6]}
+                onClick={(e) => {
                   setConfig({
                     ...config,
                     consecutive: parseInt(e.target.value),
                   })
                 }}
-              >
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-              </select>
-              <div>Players</div>
-              <select
-                name="consecutive"
-                value={config.players}
-                onChange={(e) => {
+                className="display-select"
+              />
+              <SelectComponent
+                text="Players"
+                options={[2, 3, 4]}
+                onClick={(e) => {
                   setConfig({ ...config, players: parseInt(e.target.value) })
                 }}
-              >
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-              <div>Inverted</div>
-              <input
-                type="checkbox"
-                checked={config.inverted}
-                onChange={() => {
-                  setConfig({ ...config, inverted: !config.inverted })
-                }}
+                className="display-select"
               />
+              <span className="label-div p">Inverted</span>
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  onChange={() => {
+                    setConfig({ ...config, inverted: !config.inverted })
+                  }}
+                />
+                <span className="slider round"></span>
+              </label>
               <button
                 onClick={() => {
                   setConfig({ ...config, created: true })
                 }}
+                className="create-room-btn"
               >
                 Create
               </button>

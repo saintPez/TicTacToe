@@ -20,32 +20,13 @@ function Rooms() {
     consecutive: 5,
     players: 2,
     inverted: false,
-    password: null,
   })
-  /*
-  const [snackbar, setSnack] = useState({
-    className: '',
-    text: 'Notificación',
-  })
-  */
 
   useEffect(() => {
     if (user.room) history.push('/leave')
     if (!user.socket) history.push('/home')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  /*window.addEventListener('load', () => {
-    setSnack({
-      className: 'snackbar show',
-    })
-  })
-
-  setTimeout(() => {
-    setSnack({
-      className: 'snackbar',
-    })
-  }, 2100)*/
 
   const handlerClick = () => {
     instance
@@ -71,13 +52,12 @@ function Rooms() {
             <h1 className="numberX">{`${config.width}x${config.height}`}</h1>
             <SelectComponent
               text="Consecutive"
-              options={[1, 2, 3, 4, 5, 6]}
+              options={[3, 4, 5, 6]}
               onClick={(e) => {
                 setConfig({
                   ...config,
                   consecutive: parseInt(e.target.value),
                 })
-                console.log(config.consecutive)
               }}
               className="display-select"
             />
@@ -86,7 +66,6 @@ function Rooms() {
               options={[2, 3, 4]}
               onClick={(e) => {
                 setConfig({ ...config, players: parseInt(e.target.value) })
-                console.log(config.players)
               }}
               className="display-select"
             />
@@ -96,7 +75,6 @@ function Rooms() {
                 type="checkbox"
                 onChange={() => {
                   setConfig({ ...config, inverted: !config.inverted })
-                  console.log(config.inverted)
                 }}
               />
               <span className="slider round"></span>
@@ -113,29 +91,3 @@ function Rooms() {
 }
 
 export default Rooms
-
-// <div className="rooms-create">
-//   <button
-//     onClick={() => {
-//       instance
-//         .post(`/socket/?socket=${socket.id}`, {
-//           config: {
-//             width: 3,
-//             height: 3,
-//             consecutive: 3,
-//             inverted: false,
-//             password: null,
-//             players: 2,
-//           },
-//         })
-//         .then((response) => {
-//           history.push(`/room/${response.data.room.id}`)
-//         })
-//         .catch((error) => {
-//           history.push('/')
-//         })
-//     }}
-//   >
-//     Create
-//   </button>
-// </div>

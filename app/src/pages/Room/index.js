@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { updateUser } from '../../actions/user.actions'
 
-//import LoadingSpin from '../../components/LoadingSpin'
+import LoadingSpin from '../../components/LoadingSpin'
 
 // import instance from '../../axios'
 import socket from '../../socket'
@@ -46,34 +46,12 @@ function Room() {
     setRoom(room)
   })
 
-  /*
-  isLoading ? : 
-
-  <div className="main-item loading">
-          <LoadingSpin />
-        </div>
-  */
-
   return (
     <>
       {isLoading ? (
-        <>
-          <div className="main-item">
-            <div>room16</div>
-            {room.users.map((user) => (
-              <div>
-                <div>2</div>
-                <div>Santiago Gómez Solarte</div>
-                <div>{user.ready ? 'Y' : 'N'}</div>
-              </div>
-            ))}
-            {room.users.length === room.config.players ? (
-              <button onClick={handleClick}>Go</button>
-            ) : (
-              <></>
-            )}
-          </div>
-        </>
+        <div className="main-item loading">
+          <LoadingSpin />
+        </div>
       ) : (
         <>
           <div className="main-item">
