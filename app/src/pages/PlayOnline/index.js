@@ -18,6 +18,7 @@ function PlayOnline() {
   useEffect(() => {
     if (!user.account) history.push('/home')
     if (user.room) history.push('/leave')
+    if (user.queue) history.push('/leave-queue')
 
     instance
       .post(`/socket/queue?socket=${user.socketId}`)
@@ -33,6 +34,7 @@ function PlayOnline() {
   }, [])
 
   socket.once('queue', (room) => {
+    dispatch(updateUser({ queue: false }))
     setIsLoading(true)
     history.push(`/room/${room.id}`)
   })

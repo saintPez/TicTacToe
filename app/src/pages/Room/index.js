@@ -18,8 +18,9 @@ function Room() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (user.room) history.push('/leave')
     if (!user.socket) return history.push('/')
+    if (user.room) history.push('/leave')
+    if (user.queue) history.push('/leave-queue')
     socket.emit('join', id)
     socket.once('join', (response) => {
       console.log('join', response)

@@ -14,6 +14,7 @@ function Games() {
 
   useEffect(() => {
     if (user.room) history.push('/leave')
+    if (user.queue) history.push('/leave-queue')
     instance
       .get('/game/')
       .then((response) => {

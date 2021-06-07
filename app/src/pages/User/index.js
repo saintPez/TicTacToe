@@ -23,6 +23,7 @@ function User() {
 
   useEffect(() => {
     if (_user.room) history.push('/leave')
+    if (_user.queue) history.push('/leave-queue')
     instance
       .get(`/user/${id}`)
       .then((response) => {

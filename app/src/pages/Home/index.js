@@ -10,6 +10,7 @@ function Home() {
 
   useEffect(() => {
     if (user.room) history.push('/leave')
+    if (user.queue) history.push('/leave-queue')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

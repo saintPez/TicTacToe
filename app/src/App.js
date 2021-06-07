@@ -24,6 +24,7 @@ import AccountEdit from './pages/Account/Edit/'
 import AccountPassword from './pages/Account/Password/'
 import LogOut from './pages/LogOut/'
 import PlayOnline from './pages/PlayOnline/'
+import LeaveQueue from './pages/LeaveQueue/'
 
 import TicTacToe from './components/TicTacToe'
 import Account from './components/Account'
@@ -122,6 +123,9 @@ function App() {
                 </Route>
                 <Route path="/logOut">
                   <LogOut />
+                </Route>
+                <Route path="/leave-queue">
+                  <LeaveQueue />
                 </Route>
               </div>
               <div className="main-column-right">
