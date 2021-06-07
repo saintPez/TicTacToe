@@ -1,9 +1,16 @@
 import { useState } from 'react'
 
 import './styles.css'
-import SelectItemModel from '../SelectItem'
 
-function SelectComponent({ text, options, event, className, value }) {
+function SelectComponent({
+  text,
+  options,
+  event,
+  className,
+  value,
+  chooseOption,
+  id,
+}) {
   const opts = []
 
   const [dropdown, setDw] = useState({
@@ -12,6 +19,7 @@ function SelectComponent({ text, options, event, className, value }) {
     text: text,
     options: options,
     value: value,
+    id: id,
   })
 
   /*
@@ -23,23 +31,52 @@ function SelectComponent({ text, options, event, className, value }) {
   }
   */
 
+  let dropdownObject = {}
+  dropdownObject[dropdown.id] = {}
+
+  const d1 = (e) => {
+    setDw({
+      ...dropdown,
+      className: '',
+      open: false,
+      text: e.target.textContent,
+      value: e.target.textContent,
+    })
+  }
+
   if (options) {
     for (let index = 0; index < options.length; index++) {
       opts.push(
+        <div
+          key={options[index]}
+          value={options[index]}
+          onClick={(a) => {
+            d1(a)
+            chooseOption(a)
+          }}
+          className="dropdown-item"
+          tabIndex="1"
+        >
+          {options[index]}
+        </div>
+        /*
         <SelectItemModel
           text={options[index]}
+          value={options[0]}
           key={options[index]}
-          event={{
-            onClick: (e) => {
-              setDw({
-                className: '',
-                open: false,
-                text: e.target.textContent,
-                value: e.target.textContent,
-              })
-            },
+          action={(e) => {
+            setDw({
+              ...dropdown,
+              className: '',
+              open: false,
+              text: e.target.textContent,
+              value: e.target.textContent,
+            })
+
+            dropdownObject[dropdown.id][value] = e.target.textContent
           }}
         />
+        */
       )
     }
   }
@@ -64,10 +101,10 @@ function SelectComponent({ text, options, event, className, value }) {
     <div className={`dropdown ${className}`} value={dropdown.value}>
       <button
         className="dropdown-btn"
-        onClick={functionsClick}
         type="button"
         {...event}
         value={dropdown.value}
+        onClick={functionsClick}
       >
         {dropdown.text}
       </button>

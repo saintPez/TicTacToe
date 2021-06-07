@@ -36,21 +36,26 @@ function PlayOffline() {
               <SelectComponent
                 text="Consecutive"
                 options={[3, 4, 5, 6]}
-                onClick={(e) => {
+                className="display-select"
+                chooseOption={(e) => {
                   setConfig({
                     ...config,
-                    consecutive: parseInt(e.target.value),
+                    consecutive: parseInt(e.target.textContent),
                   })
+                  //console.log(config.consecutive)
                 }}
-                className="display-select"
               />
               <SelectComponent
                 text="Players"
                 options={[2, 3, 4]}
-                onClick={(e) => {
-                  setConfig({ ...config, players: parseInt(e.target.value) })
-                }}
                 className="display-select"
+                chooseOption={(e) => {
+                  setConfig({
+                    ...config,
+                    players: parseInt(e.target.textContent),
+                  })
+                  //console.log(config.players)
+                }}
               />
               <span className="label-div p">Inverted</span>
               <label className="switch">
@@ -66,6 +71,7 @@ function PlayOffline() {
                 onClick={() => {
                   setConfig({ ...config, created: true })
                 }}
+                onMouseOver={() => console.log(config.players)}
                 className="create-room-btn"
               >
                 Create
