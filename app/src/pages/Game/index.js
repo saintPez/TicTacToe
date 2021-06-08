@@ -3,6 +3,7 @@ import { useParams, useHistory, Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import LoadingSpin from '../../components/LoadingSpin'
+import { CheckIcon, XIcon } from '@heroicons/react/outline'
 
 import Table from '../../components/Table'
 
@@ -89,7 +90,34 @@ function Game() {
               {'>'}
             </button>
           </div>
-          <div className="game-info"></div>
+          <div className="game-info">
+            <ul className="table-items">
+              <li className="item-model">
+                Width <span className="value-item">{game.board.width}</span>
+              </li>
+              <li className="item-model">
+                Height <span className="value-item">{game.board.height}</span>
+              </li>
+              <li className="item-model">
+                Consecutive{' '}
+                <span className="value-item">{game.board.consecutive}</span>
+              </li>
+              <li className="item-model">
+                Inverted{' '}
+                <span className="value-item">
+                  {game.board.inverted ? (
+                    <CheckIcon className="check-icon" />
+                  ) : (
+                    <XIcon className="none-icon" />
+                  )}
+                </span>
+              </li>
+              <li className="item-model">
+                Players{' '}
+                <span className="value-item">{game.players.length}</span>
+              </li>
+            </ul>
+          </div>
           <div className="game-players">
             {game.users.map((user) => (
               <Link
@@ -106,6 +134,30 @@ function Game() {
               </Link>
             ))}
           </div>
+
+          <ul className="history-game">
+            {[...game.history].splice(0, gameHistory).map((e) => (
+              <li key={e.width} className="list-item">
+                <span className="content-m">
+                  Position moved ({e.width},{e.height}) on the board
+                </span>
+              </li>
+            ))}
+            <li key={game.result} className="list-item">
+              {game.inverted ? (
+                <span className="content-m">
+                  Lost: <Link to={`/user/${game.result}`}>{game.result}</Link>
+                </span>
+              ) : (
+                <span className="content-m">
+                  Winner:{' '}
+                  <Link to={`/user/${game.result}`}>
+                    {game.users.find((user) => user._id === game.result)?.name}
+                  </Link>
+                </span>
+              )}
+            </li>
+          </ul>
         </div>
       )}
     </>

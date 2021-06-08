@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import Table from '../Table'
+import { CheckIcon, XIcon } from '@heroicons/react/outline'
+
+import './styles.css'
 
 const marks = ['X', 'O', 'Y', 'Z']
 
@@ -54,14 +57,39 @@ function PlayOfflineGame({ config }) {
           />
         </div>
 
+        <ul className="table-items">
+          <li className="item-model">
+            Width <span className="value-item">{config.width}</span>
+          </li>
+          <li className="item-model">
+            Height <span className="value-item">{config.height}</span>
+          </li>
+          <li className="item-model">
+            Consecutive <span className="value-item">{config.consecutive}</span>
+          </li>
+          <li className="item-model">
+            Inverted{' '}
+            <span className="value-item">
+              {config.inverted ? (
+                <CheckIcon className="check-icon" />
+              ) : (
+                <XIcon className="none-icon" />
+              )}
+            </span>
+          </li>
+          <li className="item-model">
+            Players <span className="value-item">{config.players}</span>
+          </li>
+        </ul>
+
         {game.win ? (
           config.inverted ? (
-            <div>
+            <div className="table-model">
               <div>Lose</div>
               <div>{game.win}</div>
             </div>
           ) : (
-            <div>
+            <div className="table-model">
               <div>Win</div>
               <div>{game.win}</div>
             </div>

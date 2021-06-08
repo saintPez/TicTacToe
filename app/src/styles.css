@@ -132,6 +132,20 @@ input.error {
   display: none;
 }
 
+.check-icon {
+  width: 30px;
+  height: 30px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.none-icon {
+  width: 30px;
+  height: 30px;
+  color: red;
+  font-weight: 600;
+}
+
 /* .modal-title {
   position: relative;
   padding: 10px;

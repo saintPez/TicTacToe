@@ -31,3 +31,104 @@
   justify-content: center;
   background-color: #312e2b;
 }
+
+.contain-model {
+  width: auto;
+  height: auto;
+  position: absolute;
+  z-index: 222;
+  left: 0;
+  top: 0;
+}
+
+.history-game {
+  position: relative;
+  width: 100%;
+  height: auto;
+  padding: 14px;
+  box-sizing: border-box;
+  display: block;
+  border-radius: 16px;
+  border: solid 1px #ddd;
+  margin-top: 10px;
+}
+
+.list-item {
+  position: relative;
+  width: 100%;
+  height: auto;
+  padding: 0;
+  box-sizing: border-box;
+  border-radius: 10px;
+  list-style-type: none;
+  background-color: #555;
+  cursor: pointer;
+  user-select: none;
+  margin-top: 10px;
+}
+
+.number-m {
+  position: relative;
+  width: auto;
+  height: auto;
+  padding: 10px;
+  display: inline-table;
+}
+
+.content-m {
+  position: relative;
+  width: auto;
+  height: auto;
+  padding: 10px;
+  display: inline-table;
+}
+
+.table-model {
+  position: relative;
+  width: 100%;
+  height: auto;
+  padding: 10px;
+  background-color: #555;
+  font-size: 18px;
+  color: #fff;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.table-items {
+  position: relative;
+  width: 100%;
+  height: auto;
+  padding: 6px;
+  border-radius: 10px;
+  background-color: #343434;
+  margin-bottom: 30px;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.item-model {
+  display: inline-table;
+  cursor: pointer;
+  user-select: none;
+  color: inherit;
+  padding: 12px;
+  list-style-type: none;
+  font-size: 30px;
+  min-width: 70px;
+  max-width: 250px;
+  height: 100px;
+  transition: 0.4s all;
+  border-radius: 16px;
+}
+
+.item-model:hover {
+  background-color: #555;
+}
+
+.value-item {
+  position: relative;
+  display: block;
+}

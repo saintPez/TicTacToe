@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
 import LoadingSpin from '../../components/LoadingSpin'
+import { CheckIcon, XIcon } from '@heroicons/react/outline'
 
 import { CalendarIcon } from '@heroicons/react/solid'
 import { HeartIcon } from '@heroicons/react/solid'
@@ -35,6 +36,35 @@ function User() {
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  /*
+  <table className="rooms-table">
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>win</th>
+                </tr>
+              </thead>
+              <tbody>
+                {user.games
+                  .map((game) => (
+                    <tr key={game.data}>
+                      <td>
+                        <Link to={`/game/${game.data}`}>{game.data}</Link>
+                      </td>
+                      <td>
+                        <Link to={`/game/${game.data}`}>
+                          {`${game.result}` === 'undefined'
+                            ? ''
+                            : `${game.result}`}
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                  .reverse()}
+              </tbody>
+            </table>
+  */
 
   return (
     <>
@@ -85,33 +115,36 @@ function User() {
             </div>
           </div>
 
-          <div className="main-item">
-            <table className="rooms-table">
-              <thead>
-                <tr>
-                  <th>id</th>
-                  <th>win</th>
-                </tr>
-              </thead>
-              <tbody>
-                {user.games
-                  .map((game) => (
-                    <tr key={game.data}>
-                      <td>
-                        <Link to={`/game/${game.data}`}>{game.data}</Link>
-                      </td>
-                      <td>
-                        <Link to={`/game/${game.data}`}>
-                          {`${game.result}` === 'undefined'
-                            ? ''
-                            : `${game.result}`}
-                        </Link>
-                      </td>
-                    </tr>
-                  ))
-                  .reverse()}
-              </tbody>
-            </table>
+          <div className="rooms">
+            {user.games
+              .map((game) => (
+                <Link to={`/game/${game.data}`} key={game.data}>
+                  <div className="room-item">
+                    <div className="room-content">
+                      <div className="main-1t">
+                        <span className="t-span">id</span>
+                        <span className="board-span">{game.data}</span>
+                      </div>
+                      <div className="main-2t">
+                        <span className="t-span">win</span>
+                        <span className="board-span">
+                          {`${game.result}` === 'undefined' ? (
+                            ''
+                          ) : game.result ? (
+                            <CheckIcon className="check-icon" />
+                          ) : (
+                            <XIcon className="none-icon" />
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="main-3t">
+                      <button className="btn-play">Watch</button>
+                    </div>
+                  </div>
+                </Link>
+              ))
+              .reverse()}
           </div>
         </>
       )}

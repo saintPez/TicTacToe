@@ -7,6 +7,9 @@ import { updateUser } from '../../actions/user.actions'
 
 import LoadingSpin from '../../components/LoadingSpin'
 import Table from '../../components/Table'
+import { XIcon, CheckIcon } from '@heroicons/react/outline'
+
+import './styles.css'
 
 import socket from '../../socket'
 
@@ -69,6 +72,33 @@ function PlayOnlineGame() {
               history={game.history}
             />
           </div>
+
+          <ul className="table-items">
+            <li className="item-model">
+              Width <span className="value-item">{game.config.width}</span>
+            </li>
+            <li className="item-model">
+              Height <span className="value-item">{game.config.height}</span>
+            </li>
+            <li className="item-model">
+              Consecutive{' '}
+              <span className="value-item">{game.config.consecutive}</span>
+            </li>
+            <li className="item-model">
+              Inverted{' '}
+              <span className="value-item">
+                {game.config.inverted ? (
+                  <CheckIcon className="check-icon" />
+                ) : (
+                  <XIcon className="none-icon" />
+                )}
+              </span>
+            </li>
+            <li className="item-model">
+              Players <span className="value-item">{game.config.players}</span>
+            </li>
+          </ul>
+
           {game.win ? (
             game.config.inverted ? (
               <div>

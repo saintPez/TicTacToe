@@ -6,7 +6,6 @@ import { updateUser } from '../../actions/user.actions'
 
 import LoadingSpin from '../../components/LoadingSpin'
 
-import instance from '../../axios'
 import socket from '../../socket'
 
 import { UserCircleIcon } from '@heroicons/react/outline'
@@ -51,43 +50,6 @@ function Room() {
     setRoom(room)
   })
 
-  /*
-  <div className="main-item">
-            <div>{room.id}</div>
-            {room.users.map((user) => (
-              <div>
-                <div>{user.id}</div>
-                <div>{user.name}</div>
-                <div>{user.ready ? 'Y' : 'N'}</div>
-              </div>
-            ))}
-            {room.users.length === room.config.players ? (
-              <button onClick={handleClick}>Go</button>
-            ) : (
-              <></>
-            )}
-          </div>
-  */
-
-  /*
-  <div className="main-item">
-        <div>24124249-90db-4a82-9fc9-ecfb456456df</div>
-        <div>
-          <div>60b2e9905247300028b63413</div>
-          <div>santiagogomezsolarte</div>
-          <div>{user2.ready ? 'Y' : 'N'}</div>
-          <div>
-            {user2.players}/{user2.config.players}
-          </div>
-        </div>
-        {user2.players === user2.config.players ? (
-          <button onClick={handleClick}>Go</button>
-        ) : (
-          <></>
-        )}
-      </div>
-  */
-
   return (
     <>
       {isLoading ? (
@@ -106,7 +68,9 @@ function Room() {
               {room.users.map((user) => (
                 <div className="user-model">
                   <UserCircleIcon className="user-icon" />
-                  <span className="name-model">{user.name}</span>
+                  <span className="name-model">{`${user.name} ${
+                    user.score || ''
+                  }`}</span>
                   <span className="ready-model">
                     {user.ready ? (
                       <CheckIcon className="check-icon" />
