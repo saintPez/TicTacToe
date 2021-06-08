@@ -60,7 +60,6 @@ function Rooms() {
                   ...config,
                   consecutive: parseInt(e.target.textContent),
                 })
-                //console.log(config.consecutive)
               }}
             />
             <SelectComponent
@@ -72,7 +71,6 @@ function Rooms() {
                   ...config,
                   players: parseInt(e.target.textContent),
                 })
-                //console.log(config.players)
               }}
             />
             <span className="label-div p">Inverted</span>
@@ -85,11 +83,7 @@ function Rooms() {
               />
               <span className="slider round"></span>
             </label>
-            <button
-              onClick={handlerClick}
-              className="create-room-btn"
-              onMouseOver={() => console.log(config.players)}
-            >
+            <button onClick={handlerClick} className="create-room-btn">
               Create
             </button>
           </div>

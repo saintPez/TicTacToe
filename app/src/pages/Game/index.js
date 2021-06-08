@@ -137,7 +137,7 @@ function Game() {
 
           <ul className="history-game">
             {[...game.history].splice(0, gameHistory).map((e) => (
-              <li key={e.width} className="list-item">
+              <li key={`${e.width}x${e.height}`} className="list-item">
                 <span className="content-m">
                   Position moved ({e.width},{e.height}) on the board
                 </span>
