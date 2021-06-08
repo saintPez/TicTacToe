@@ -101,12 +101,12 @@ function PlayOnlineGame() {
 
           {game.win ? (
             game.config.inverted ? (
-              <div>
+              <div className="table-model">
                 <div>Lose</div>
                 <div>{game.win.name}</div>
               </div>
             ) : (
-              <div>
+              <div className="table-model">
                 <div>Win</div>
                 <div>{game.win.name}</div>
               </div>
