@@ -1,27 +1,23 @@
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useCookies } from 'react-cookie'
 import { useDispatch } from 'react-redux'
 
-import { resetUser } from '../../actions/user.actions'
+import { updateUser } from '../../actions/user.actions'
 
 import socket from '../../socket'
 
 import LoadingSpin from '../../components/LoadingSpin'
 
-function LogOut() {
-  const [, , removeCookie] = useCookies(['Authorization'])
+function LeaveQueue() {
   const history = useHistory()
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(resetUser())
-    socket.emit('leave')
+    dispatch(updateUser({ queue: false }))
     socket.emit('leave-queue')
-    removeCookie('refresh_token')
-    removeCookie('Authorization')
-
-    history.push('/')
+    socket.once('leave-queue', (response) => {
+      if (response.success) history.push('/')
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -34,4 +30,4 @@ function LogOut() {
   )
 }
 
-export default LogOut
+export default LeaveQueue

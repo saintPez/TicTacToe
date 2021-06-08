@@ -21,6 +21,7 @@ function Play() {
 
   useEffect(() => {
     if (user.room) history.push('/leave')
+    if (user.queue) history.push('/leave-queue')
     instance
       .get(`/socket/?socket=${socket.id}`, {
         config: { test: 'hola' },

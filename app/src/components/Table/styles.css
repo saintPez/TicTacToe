@@ -39,7 +39,14 @@
 }
 
 .table-item {
+  outline: none;
+  border: 1px solid #272522;
   width: 100%;
+  background-color: #ffffffa6;
+}
+
+.table-item:hover {
+  background-color: #ffff;
 }
 
 .active {

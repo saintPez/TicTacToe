@@ -33,8 +33,9 @@ function SignUp() {
   const [data, setData] = useState({ name: '', email: '', password: '' })
 
   useEffect(() => {
-    if (user.room) history.push('/leave')
     if (user.account) history.push('/home')
+    if (user.room) history.push('/leave')
+    if (user.queue) history.push('/leave-queue')
   })
 
   const handleSubmit = async (e) => {
