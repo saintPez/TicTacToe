@@ -12,26 +12,12 @@ function Home() {
     if (user.room) history.push('/leave')
     if (user.queue) history.push('/leave-queue')
     // eslint-disable-next-line react-hooks/exhaustive-deps
-
-    /*
-    for (let i = 0; i < items.length; i++) {
-      items.addEventListener('click', () => {
-        let val = document.querySelector('div[value=' + this.value + ']')
-
-        if (val) {
-          items[i].style.display = 'none'
-          val.style.display = 'block'
-        }
-      })
-    }
-    */
   }, [])
 
   const items_model = document.getElementsByClassName('item-content')
 
   const handleClickOn = (e) => {
     let val = e.target.getAttribute('list-value')
-    //val = document.querySelector(`div[list-value=${val}]`)
     val = document.getElementById(val)
 
     for (let i = 0; i < items_model.length; i++) {
