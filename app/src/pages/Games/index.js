@@ -40,7 +40,7 @@ function Games() {
       ) : (
         <div className="rooms">
           {games.map((game) => (
-            <Link to={`/game/${game._id}`} key={game.id}>
+            <Link to={`/game/${game._id}`} key={game._id}>
               <div className="room-item">
                 <div className="room-content">
                   <div className="main-1t">

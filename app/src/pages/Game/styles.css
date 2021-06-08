@@ -101,7 +101,7 @@
   height: auto;
   padding: 6px;
   border-radius: 10px;
-  background-color: #343434;
+  background-color: #1f1e1b;
   margin-bottom: 30px;
   justify-content: center;
   text-align: center;
@@ -122,10 +122,6 @@
   height: 100px;
   transition: 0.4s all;
   border-radius: 16px;
-}
-
-.item-model:hover {
-  background-color: #555;
 }
 
 .value-item {

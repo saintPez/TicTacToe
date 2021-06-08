@@ -43,7 +43,6 @@ function PlayOffline() {
                     ...config,
                     consecutive: parseInt(e.target.textContent),
                   })
-                  //console.log(config.consecutive)
                 }}
               />
               <SelectComponent
@@ -55,7 +54,6 @@ function PlayOffline() {
                     ...config,
                     players: parseInt(e.target.textContent),
                   })
-                  //console.log(config.players)
                 }}
               />
               <span className="label-div p">Inverted</span>
@@ -72,7 +70,6 @@ function PlayOffline() {
                 onClick={() => {
                   setConfig({ ...config, created: true })
                 }}
-                onMouseOver={() => console.log(config.players)}
                 className="create-room-btn"
               >
                 Create

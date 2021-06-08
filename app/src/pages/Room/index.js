@@ -66,7 +66,7 @@ function Room() {
           <div className="tab-s-content">
             <div className="model-list">
               {room.users.map((user) => (
-                <div className="user-model">
+                <div key={user.id} className="user-model">
                   <UserCircleIcon className="user-icon" />
                   <span className="name-model">{`${user.name} ${
                     user.score || ''
