@@ -12,39 +12,88 @@ function Home() {
     if (user.room) history.push('/leave')
     if (user.queue) history.push('/leave-queue')
     // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    /*
+    for (let i = 0; i < items.length; i++) {
+      items.addEventListener('click', () => {
+        let val = document.querySelector('div[value=' + this.value + ']')
+
+        if (val) {
+          items[i].style.display = 'none'
+          val.style.display = 'block'
+        }
+      })
+    }
+    */
   }, [])
+
+  const items_model = document.getElementsByClassName('item-content')
+
+  const handleClickOn = (e) => {
+    let val = e.target.getAttribute('list-value')
+    //val = document.querySelector(`div[list-value=${val}]`)
+    val = document.getElementById(val)
+
+    for (let i = 0; i < items_model.length; i++) {
+      items_model[i].style.display = 'none'
+      val.style.display = 'block'
+    }
+  }
 
   return (
     <>
       <div className="main-item">
-        <h1>News</h1>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ut
-          auctor magna. Suspendisse metus justo, hendrerit in semper non,
-          iaculis ac leo. Vivamus molestie sem aliquam magna pharetra tempus.
-          Mauris diam nisi, convallis et dignissim nec, mollis nec nisl. Aliquam
-          ac interdum erat, quis tincidunt magna. Suspendisse porttitor velit a
-          hendrerit sodales. Integer sollicitudin accumsan ante a iaculis. Sed
-          elementum velit malesuada neque pellentesque, eget porta nunc
-          hendrerit. Donec at arcu tincidunt, tempor sem ac, lacinia ante. Proin
-          in arcu in nisi condimentum posuere. Nulla tincidunt scelerisque mi
-          non aliquam. Donec accumsan tristique sapien, in ultricies massa
-          faucibus ac.
-        </p>
-        <br />
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ut
-          auctor magna. Suspendisse metus justo, hendrerit in semper non,
-          iaculis ac leo. Vivamus molestie sem aliquam magna pharetra tempus.
-          Mauris diam nisi, convallis et dignissim nec, mollis nec nisl. Aliquam
-          ac interdum erat, quis tincidunt magna. Suspendisse porttitor velit a
-          hendrerit sodales. Integer sollicitudin accumsan ante a iaculis. Sed
-          elementum velit malesuada neque pellentesque, eget porta nunc
-          hendrerit. Donec at arcu tincidunt, tempor sem ac, lacinia ante. Proin
-          in arcu in nisi condimentum posuere. Nulla tincidunt scelerisque mi
-          non aliquam. Donec accumsan tristique sapien, in ultricies massa
-          faucibus ac.
-        </p>
+        <ul className="list-menu">
+          <li className="item-model" list-value="about" onClick={handleClickOn}>
+            About
+          </li>
+          <li
+            className="item-model"
+            list-value="policy"
+            onClick={handleClickOn}
+          >
+            Privacy Policy
+          </li>
+          <li className="item-model" list-value="terms" onClick={handleClickOn}>
+            Terms of use
+          </li>
+        </ul>
+        <div className="menu-load">
+          <div id="about" className="item-content show">
+            TicTacToe es una aplicación de juego, inspirada en tres en raya o
+            tres en línea. Que te permite compartir con amigos. Crear juegos
+            personalizados, donde puedes jugar solo y jugar en línea.
+            <br />
+            TicTacToe además permite que hables con tus amigos por el medio del
+            Chat mientras juegas, este chat es a nivel global. Para que puedas
+            interactuar con tus amigos y con otras personas dentro de la
+            prataforma.
+          </div>
+          <div id="policy" className="item-content">
+            En la política de privacidad de TicTacToe, prometemos proteger la
+            información de nuestros usuarios.
+            <br />
+            Además toda la información que recopilamos sea nombre, correo
+            eléctronico y otros aspectos más relacionados con el historial de
+            cada partida jugada o aspectos del juego. Son usados para mejorar
+            nuestros servicios y no hacemos uso de ellos para fines lucrativos.
+          </div>
+          <div id="terms" className="item-content">
+            Nuestros términos de uso resaltan los siguientes puntos para cada
+            usuario.
+            <br />
+            <ol className="m-p">
+              <li>
+                Si usted es parte de TicTacToe, debe respetar a los miembros de
+                la comunidad.
+              </li>
+              <li>
+                Si usted habla desde el chat, deberá ser respetuoso con los
+                demás miembros.
+              </li>
+            </ol>
+          </div>
+        </div>
       </div>
     </>
   )
