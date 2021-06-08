@@ -20,7 +20,7 @@ function Table({ width, height, handleClick, history }) {
       table.push(
         <button
           key={`${i}x${a}`}
-          className={`table-item`}
+          className="table-item"
           onClick={() => {
             handleClick(a + 1, i + 1)
           }}

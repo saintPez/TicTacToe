@@ -1,0 +1,33 @@
+.game-action {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.game-action-button {
+  margin: 15px;
+}
+
+.game-players {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.game-user {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.game-user-avatar {
+  min-width: 24px;
+  min-height: 24px;
+  max-width: 24px;
+  max-height: 24px;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #312e2b;
+}

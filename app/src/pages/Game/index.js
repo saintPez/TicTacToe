@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useHistory, Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import LoadingSpin from '../../components/LoadingSpin'
@@ -7,6 +7,8 @@ import LoadingSpin from '../../components/LoadingSpin'
 import Table from '../../components/Table'
 
 import instance from '../../axios'
+
+import './styles.css'
 
 function Game() {
   const history = useHistory()
@@ -22,11 +24,21 @@ function Game() {
     instance
       .get(`/game/${id}`)
       .then((response) => {
-        setGame({ ...response.data.game })
-        setIsLoading(false)
+        const players = []
+        for (const user of response.data.game.players) {
+          instance
+            .get(`/user/${user}`)
+            .then((_response) => {
+              players.push({ ..._response.data.user })
+              setGame({ ...response.data.game, users: [...players] })
+              setIsLoading(false)
+            })
+            .catch((error) => {
+              history.push('/')
+            })
+        }
       })
       .catch((error) => {
-        console.log(error.response)
         history.push('/')
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,8 +76,35 @@ function Game() {
             />
           </div>
           <div className="game-action">
-            <button onClick={() => nextHistory(false)}>{'<'}</button>
-            <button onClick={() => nextHistory(true)}>{'>'}</button>
+            <button
+              className="game-action-button button"
+              onClick={() => nextHistory(false)}
+            >
+              {'<'}
+            </button>
+            <button
+              className="game-action-button button"
+              onClick={() => nextHistory(true)}
+            >
+              {'>'}
+            </button>
+          </div>
+          <div className="game-info"></div>
+          <div className="game-players">
+            {game.users.map((user) => (
+              <Link
+                key={`${user._id}`}
+                to={`/user/${user._id}`}
+                className="game-user"
+              >
+                <span className="game-user-avatar">
+                  {(user.username || user.name)?.charAt(0)}
+                </span>
+                <span>
+                  {user.username || user.name} ({user.score})
+                </span>
+              </Link>
+            ))}
           </div>
         </div>
       )}

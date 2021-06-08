@@ -18,7 +18,6 @@ function Games() {
     instance
       .get('/game/')
       .then((response) => {
-        console.log(response)
         setGames(response.data.game)
         setIsLoading(false)
       })
@@ -31,7 +30,7 @@ function Games() {
   return (
     <>
       {isLoading ? (
-        <div className="main-item">
+        <div className="main-item loading">
           <LoadingSpin />
         </div>
       ) : (
