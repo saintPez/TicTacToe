@@ -84,7 +84,11 @@ function Rooms() {
               />
               <span className="slider round"></span>
             </label>
-            <button onClick={handlerClick} className="create-room-btn">
+            <button
+              onClick={handlerClick}
+              className="create-room-btn"
+              onMouseOver={() => console.log(config.players)}
+            >
               Create
             </button>
           </div>

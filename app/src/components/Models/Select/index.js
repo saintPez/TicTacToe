@@ -9,7 +9,6 @@ function SelectComponent({
   className,
   value,
   chooseOption,
-  id,
 }) {
   const opts = []
 
@@ -19,7 +18,6 @@ function SelectComponent({
     text: text,
     options: options,
     value: value,
-    id: id,
   })
 
   /*
@@ -31,8 +29,10 @@ function SelectComponent({
   }
   */
 
+  /*
   let dropdownObject = {}
   dropdownObject[dropdown.id] = {}
+  */
 
   const d1 = (e) => {
     setDw({

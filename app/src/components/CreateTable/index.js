@@ -12,10 +12,16 @@ function CreateTable({ config, setConfig }) {
 
     const buttons = document.getElementsByClassName('rooms-create-table-item')
 
-    for (const button of buttons) {
-      button.style.height = `${box.offsetWidth}px`
-      button.style.fontSize = `${box.offsetWidth}px`
-    }
+    setInterval(() => {
+      for (const button of buttons) {
+        if (box.offsetWidth === button.getAttribute('h')) {
+        } else {
+          button.style.height = `${box.offsetWidth}px`
+          button.style.fontSize = `${box.offsetWidth}px`
+          button.setAttribute('h', `${box.offsetWidth}`)
+        }
+      }
+    })
 
     handlerClick(config.width, config.height)
     // eslint-disable-next-line react-hooks/exhaustive-deps

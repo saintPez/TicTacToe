@@ -6,8 +6,14 @@ import { updateUser } from '../../actions/user.actions'
 
 import LoadingSpin from '../../components/LoadingSpin'
 
-// import instance from '../../axios'
+import instance from '../../axios'
 import socket from '../../socket'
+
+import { UserCircleIcon } from '@heroicons/react/outline'
+import { CheckIcon } from '@heroicons/react/outline'
+import { XIcon } from '@heroicons/react/outline'
+
+import './styles.css'
 
 function Room() {
   const history = useHistory()
@@ -22,7 +28,6 @@ function Room() {
     if (!user.socket) return history.push('/')
     socket.emit('join', id)
     socket.once('join', (response) => {
-      console.log('join', response)
       if (!response.success) return history.push('/')
       setRoom(response.room)
       setIsLoading(false)
@@ -41,20 +46,12 @@ function Room() {
   }
 
   socket.on('room', (room) => {
-    console.log('room', room)
     if (room.playing) return history.push(`/play/online/${room.id}`)
     setRoom(room)
   })
 
-  return (
-    <>
-      {isLoading ? (
-        <div className="main-item loading">
-          <LoadingSpin />
-        </div>
-      ) : (
-        <>
-          <div className="main-item">
+  /*
+  <div className="main-item">
             <div>{room.id}</div>
             {room.users.map((user) => (
               <div>
@@ -69,7 +66,67 @@ function Room() {
               <></>
             )}
           </div>
-        </>
+  */
+
+  /*
+  <div className="main-item">
+        <div>24124249-90db-4a82-9fc9-ecfb456456df</div>
+        <div>
+          <div>60b2e9905247300028b63413</div>
+          <div>santiagogomezsolarte</div>
+          <div>{user2.ready ? 'Y' : 'N'}</div>
+          <div>
+            {user2.players}/{user2.config.players}
+          </div>
+        </div>
+        {user2.players === user2.config.players ? (
+          <button onClick={handleClick}>Go</button>
+        ) : (
+          <></>
+        )}
+      </div>
+  */
+
+  return (
+    <>
+      {isLoading ? (
+        <div className="main-item loading">
+          <LoadingSpin />
+        </div>
+      ) : (
+        <div className="tab-room">
+          <div className="tab-content">
+            <span className="players-text">
+              {room.users.length}/{room.config.players}
+            </span>
+          </div>
+          <div className="tab-s-content">
+            <div className="model-list">
+              {room.users.map((user) => (
+                <div className="user-model">
+                  <UserCircleIcon className="user-icon" />
+                  <span className="name-model">{user.name}</span>
+                  <span className="ready-model">
+                    {user.ready ? (
+                      <CheckIcon className="check-icon" />
+                    ) : (
+                      <>
+                        <XIcon className="none-icon" />
+                      </>
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {room.users.length === room.config.players ? (
+              <button className="ready-btn" onClick={handleClick}>
+                Play
+              </button>
+            ) : (
+              <></>
+            )}
+          </div>
+        </div>
       )}
     </>
   )

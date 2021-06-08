@@ -83,7 +83,7 @@
 }
 
 .main-3t {
-  background-color: #666;
+  background-color: #333;
   justify-content: center;
   text-align: center;
   display: block;
@@ -111,18 +111,4 @@
   font-size: 25px;
   margin-top: 20px;
   margin-bottom: 20px;
-}
-
-.check-icon {
-  width: 30px;
-  height: 30px;
-  color: #fff;
-  font-weight: 600;
-}
-
-.none-icon {
-  width: 30px;
-  height: 30px;
-  color: red;
-  font-weight: 600;
 }
